@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    >
+
+
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:layout_width="150dp"
+        android:layout_height="170dp"
+        style="@style/SpinKitView.Large.CubeGrid"
+        app:SpinKit_Color="@color/colorPrimary"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Profile Creating"
+        android:textColor="#292929"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please wait!"
+        android:textColor="#292929"
+        android:textSize="18sp"
+        android:fontFamily="sans-serif"
+        />
+
+</LinearLayout>
