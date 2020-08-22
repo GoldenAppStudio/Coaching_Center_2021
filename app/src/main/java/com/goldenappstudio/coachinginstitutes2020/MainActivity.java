@@ -29,20 +29,17 @@ public class MainActivity extends AppCompatActivity {
     public static Fragment fragment;
     private HomeFragment homeFragment;
     private NotificationFragment notificationFragment;
+    private Store store;
+    private Batch batch;
     private Account accountFragment;
     private BottomNavigationView mainbottomNav;
-
 
     public FirebaseAuth mAuth;
 
     @Override
     public void onStart() {
         super.onStart();
-
-
         if(!isNetworkAvailable(this)) {
-
-
             new AlertDialog.Builder(this)
                     .setTitle("Network Error!")
                     .setMessage("Connect To Internet First...")
@@ -70,8 +67,6 @@ public class MainActivity extends AppCompatActivity {
         }*/
     }
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,8 +76,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(!isNetworkAvailable(this)) {
-
-
             new AlertDialog.Builder(this)
                     .setTitle("Network Error!")
                     .setMessage("Connect To Internet First...")
@@ -101,52 +94,45 @@ public class MainActivity extends AppCompatActivity {
             System.exit(0);*/
         }
 
-
         mainbottomNav = findViewById(R.id.mainBottomNav);
 
         // FRAGMENTS
         homeFragment = new HomeFragment();
         notificationFragment = new NotificationFragment();
         accountFragment = new Account();
+        batch = new Batch();
+        store = new Store();
 
         initializeFragment();
 
-        mainbottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
+        mainbottomNav.setOnNavigationItemSelectedListener(item -> {
 
-                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.frameLayout);
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.frameLayout);
 
-                switch (item.getItemId()) {
-
-                    case R.id.bottom_action_home:
-
-                        replaceFragment(homeFragment, currentFragment);
-                        return true;
-
-                    case R.id.bottom_action_account:
-
-                        replaceFragment(accountFragment, currentFragment);
-                        return true;
-
-                    case R.id.bottom_action_notif:
-
-                        replaceFragment(notificationFragment, currentFragment);
-                        return true;
-
-                    default:
-                        return false;
-
-
-                }
-
+            switch (item.getItemId()) {
+                case R.id.bottom_action_home:
+                    replaceFragment(homeFragment, currentFragment);
+                    return true;
+                case R.id.bottom_action_account:
+                    replaceFragment(accountFragment, currentFragment);
+                    return true;
+                case R.id.bottom_action_notif:
+                    replaceFragment(notificationFragment, currentFragment);
+                    return true;
+                case R.id.bottom_action_store:
+                    replaceFragment(store, currentFragment);
+                    return true;
+                case R.id.bottom_action_batch:
+                    replaceFragment(batch, currentFragment);
+                    return true;
+                default:
+                    return false;
             }
         });
 
         sNavigationDrawer = findViewById(R.id.navigationDrawer);
 
         //Creating a list of menu Items
-
         List<MenuItem> menuItems = new ArrayList<>();
 
         //Use the MenuItem given by this library and not the default one.
@@ -165,81 +151,77 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager.beginTransaction().setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).replace(R.id.frameLayout, fragment).commit();
         }
 
-        sNavigationDrawer.setOnMenuItemClickListener(new SNavigationDrawer.OnMenuItemClickListener() {
-            @Override
-            public void onMenuItemClicked(int position) {
-                System.out.println("Position "+position);
+        sNavigationDrawer.setOnMenuItemClickListener(position -> {
+            System.out.println("Position "+position);
 
-                switch (position){
-                    case 0:{
-                        Intent intent = new Intent(MainActivity.this,Second.class);
-                        startActivity(intent);
-                        break;
-                    }
+            switch (position){
+                case 0:{
+                    Intent intent = new Intent(MainActivity.this,Second.class);
+                    startActivity(intent);
+                    break;
+                }
+            }
 
+            sNavigationDrawer.setDrawerListener(new SNavigationDrawer.DrawerListener() {
+
+                @Override
+                public void onDrawerOpened() {
 
                 }
-                sNavigationDrawer.setDrawerListener(new SNavigationDrawer.DrawerListener() {
 
-                    @Override
-                    public void onDrawerOpened() {
+                @Override
+                public void onDrawerOpening(){
 
+                }
+
+                @Override
+                public void onDrawerClosing(){
+                    System.out.println("Drawer closed");
+
+                    try {
+                        fragment = (Fragment) fragmentClass.newInstance();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
 
-                    @Override
-                    public void onDrawerOpening(){
+                    if (fragment != null) {
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        fragmentManager.beginTransaction().setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).replace(R.id.frameLayout, fragment).commit();
 
                     }
+                }
 
-                    @Override
-                    public void onDrawerClosing(){
-                        System.out.println("Drawer closed");
+                @Override
+                public void onDrawerClosed() {
 
-                        try {
-                            fragment = (Fragment) fragmentClass.newInstance();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                }
 
-                        if (fragment != null) {
-                            FragmentManager fragmentManager = getSupportFragmentManager();
-                            fragmentManager.beginTransaction().setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).replace(R.id.frameLayout, fragment).commit();
-
-                        }
-                    }
-
-                    @Override
-                    public void onDrawerClosed() {
-
-                    }
-
-                    @Override
-                    public void onDrawerStateChanged(int newState) {
-                        System.out.println("State "+newState);
-                    }
-                });
-            }
+                @Override
+                public void onDrawerStateChanged(int newState) {
+                    System.out.println("State "+newState);
+                }
+            });
         });
     }
 
 
     private void initializeFragment(){
-
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-
         fragmentTransaction.add(R.id.frameLayout, homeFragment);
         fragmentTransaction.add(R.id.frameLayout, notificationFragment);
         fragmentTransaction.add(R.id.frameLayout, accountFragment);
-
+        fragmentTransaction.add(R.id.frameLayout, batch);
+        fragmentTransaction.add(R.id.frameLayout, store);
         fragmentTransaction.hide(notificationFragment);
         fragmentTransaction.hide(accountFragment);
-
+        fragmentTransaction.hide(batch);
+        fragmentTransaction.hide(store);
         fragmentTransaction.commit();
-
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
         homeFragment.onSaveInstanceState();
         notificationFragment.onSaveInstanceState();
         accountFragment.onSaveInstanceState();
@@ -249,25 +231,36 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if(fragment == homeFragment){
-
             fragmentTransaction.hide(accountFragment);
             fragmentTransaction.hide(notificationFragment);
-
+            fragmentTransaction.hide(store);
+            fragmentTransaction.hide(batch);
         }
-
         if(fragment == accountFragment){
-
             fragmentTransaction.hide(homeFragment);
             fragmentTransaction.hide(notificationFragment);
-
+            fragmentTransaction.hide(store);
+            fragmentTransaction.hide(batch);
         }
-
         if(fragment == notificationFragment){
-
             fragmentTransaction.hide(homeFragment);
             fragmentTransaction.hide(accountFragment);
-
+            fragmentTransaction.hide(store);
+            fragmentTransaction.hide(batch);
         }
+        if(fragment == store){
+            fragmentTransaction.hide(homeFragment);
+            fragmentTransaction.hide(accountFragment);
+            fragmentTransaction.hide(notificationFragment);
+            fragmentTransaction.hide(batch);
+        }
+        if(fragment == batch){
+            fragmentTransaction.hide(homeFragment);
+            fragmentTransaction.hide(accountFragment);
+            fragmentTransaction.hide(store);
+            fragmentTransaction.hide(notificationFragment);
+        }
+
         fragmentTransaction.show(fragment);
 
         //fragmentTransaction.replace(R.id.main_container, fragment);

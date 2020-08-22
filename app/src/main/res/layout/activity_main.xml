@@ -7,25 +7,26 @@
     tools:context=".MainActivity">
 
     <com.shrikanthravi.customnavigationdrawer2.widget.SNavigationDrawer
+        android:id="@+id/navigationDrawer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/navigationDrawer">
+        android:layout_height="match_parent">
 
         <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/mainBottomNav"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="1dp"
                 android:background="#fff"
-                app:menu="@menu/bottom_menu"
-                android:layout_gravity="bottom"/>
+                app:menu="@menu/bottom_menu" />
 
         </FrameLayout>
+
 
     </com.shrikanthravi.customnavigationdrawer2.widget.SNavigationDrawer>
 </RelativeLayout>

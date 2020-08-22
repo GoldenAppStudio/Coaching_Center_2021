@@ -1,19 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="10dp"
+    android:background="#eee"
     tools:context=".Account">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view20"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:text="Account Fragment" />
+        android:layout_height="wrap_content">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="15dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/relativelayout0"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/user_image"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="30dp"
+                    android:src="@drawable/user_image_placeholder" />
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="20dp"
+                    android:layout_toEndOf="@+id/user_image"
+                    android:text="Aman Kaushik"
+                    android:textColor="#000"
+                    android:textSize="20sp"
+                    android:textStyle="bold|italic" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:animateLayoutChanges="true"
+                android:orientation="horizontal">
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:textColor="#000"
+                    android:textAlignment="center"
+                    android:id="@+id/user_personal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PERSONAL"
+                    android:textSize="17sp" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:textSize="17sp"
+                    android:id="@+id/user_batches"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="BATCHES" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:textSize="17sp"
+                    android:id="@+id/user_details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DETAILS" />
+
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <ScrollView
+        android:id="@+id/user_personal_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/card_view20"
+        android:layout_marginTop="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.alespero.expandablecardview.ExpandableCardView
+                android:id="@+id/user_basic_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                app:animationDuration="200"
+                app:expandOnClick="true"
+                app:icon="@drawable/info"
+                app:inner_view="@layout/basic_info"
+                app:startExpanded="false"
+                app:title="Basic Information" />
+
+            <com.alespero.expandablecardview.ExpandableCardView
+                android:id="@+id/user_parents_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textAlignment="center"
+                app:animationDuration="200"
+                app:expandOnClick="true"
+                app:icon="@drawable/contact"
+                app:inner_view="@layout/personal"
+                app:startExpanded="false"
+                app:title="Personal Details" />
+
+            <com.alespero.expandablecardview.ExpandableCardView
+                android:id="@+id/user_study_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textAlignment="center"
+                app:animationDuration="200"
+                app:expandOnClick="true"
+                app:icon="@drawable/adress"
+                app:inner_view="@layout/address"
+                app:startExpanded="false"
+                app:title="Address" />
+
+            <com.alespero.expandablecardview.ExpandableCardView
+                android:id="@+id/profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textAlignment="center"
+                app:animationDuration="200"
+                app:expandOnClick="true"
+                app:icon="@drawable/mortarboard"
+                app:inner_view="@layout/education"
+                app:startExpanded="false"
+                app:title="Education Details" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/user_edit"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="65dp"
+        android:src="@drawable/ic_baseline_edit_24" />
+
+
+</RelativeLayout>
+
+

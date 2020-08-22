@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private int currentStep = 0;
-    LinearLayout layout1,layout2,layout3;
+    LinearLayout layout1,layout2;
     StepView stepView;
     AlertDialog dialog_verifying,profile_dialog;
 
@@ -76,7 +76,6 @@ public class LoginActivity extends AppCompatActivity {
     private String mVerificationId;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
 
-
     private FirebaseAuth mAuth;
 
     @SuppressLint("SetTextI18n")
@@ -89,10 +88,8 @@ public class LoginActivity extends AppCompatActivity {
 
         layout1 = findViewById(R.id.layout1);
         layout2 = findViewById(R.id.layout2);
-        layout3 = findViewById(R.id.layout3);
         sendCodeButton = findViewById(R.id.submit1);
         verifyCodeButton = findViewById(R.id.submit2);
-        button3 = findViewById(R.id.submit3);
         firebaseAuth = FirebaseAuth.getInstance();
         phoneNum = findViewById(R.id.phonenumber);
         verifyCodeET = findViewById(R.id.pinView);
@@ -100,40 +97,37 @@ public class LoginActivity extends AppCompatActivity {
 
 
         stepView = findViewById(R.id.step_view);
-        stepView.setStepsNumber(3);
+        stepView.setStepsNumber(2);
         stepView.go(0, true);
         layout1.setVisibility(View.VISIBLE);
 
-        sendCodeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        sendCodeButton.setOnClickListener(view -> {
 
-                String phoneNumber = phoneNum.getText().toString();
-                phonenumberText.setText(phoneNumber);
+            String phoneNumber = phoneNum.getText().toString();
+            phonenumberText.setText(phoneNumber);
 
-                if (TextUtils.isEmpty(phoneNumber)) {
-                    phoneNum.setError("Enter a Phone Number");
-                    phoneNum.requestFocus();
-                } else if (phoneNumber.length() < 10) {
-                    phoneNum.setError("Please enter a valid phone");
-                    phoneNum.requestFocus();
+            if (TextUtils.isEmpty(phoneNumber)) {
+                phoneNum.setError("Enter a Phone Number");
+                phoneNum.requestFocus();
+            } else if (phoneNumber.length() < 10) {
+                phoneNum.setError("Please enter a valid phone");
+                phoneNum.requestFocus();
+            } else {
+
+                if (currentStep < stepView.getStepCount() - 1) {
+                    currentStep++;
+                    stepView.go(currentStep, true);
                 } else {
-
-                    if (currentStep < stepView.getStepCount() - 1) {
-                        currentStep++;
-                        stepView.go(currentStep, true);
-                    } else {
-                        stepView.done(true);
-                    }
-                    layout1.setVisibility(View.GONE);
-                    layout2.setVisibility(View.VISIBLE);
-                    PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                            "+91"+phoneNumber,        // Phone number to verify
-                            60,                 // Timeout duration
-                            TimeUnit.SECONDS,   // Unit of timeout
-                            LoginActivity.this,               // Activity (for callback binding)
-                            mCallbacks);        // OnVerificationStateChangedCallbacks
+                    stepView.done(true);
                 }
+                layout1.setVisibility(View.GONE);
+                layout2.setVisibility(View.VISIBLE);
+                PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                        "+91"+phoneNumber,        // Phone number to verify
+                        60,                 // Timeout duration
+                        TimeUnit.SECONDS,   // Unit of timeout
+                        LoginActivity.this,               // Activity (for callback binding)
+                        mCallbacks);        // OnVerificationStateChangedCallbacks
             }
         });
 
@@ -167,57 +161,25 @@ public class LoginActivity extends AppCompatActivity {
             }
         };
 
-        verifyCodeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        verifyCodeButton.setOnClickListener(view -> {
 
-                String verificationCode = verifyCodeET.getText().toString();
-                if(verificationCode.isEmpty()){
-                    Toast.makeText(LoginActivity.this,"Enter verification code", Toast.LENGTH_SHORT).show();
-                }else {
+            String verificationCode = verifyCodeET.getText().toString();
+            if(verificationCode.isEmpty()){
+                Toast.makeText(LoginActivity.this,"Enter verification code", Toast.LENGTH_SHORT).show();
+            }else {
 
-                    LayoutInflater inflater = getLayoutInflater();
-                    View alertLayout= inflater.inflate(R.layout.processing_dialog,null);
-                    AlertDialog.Builder show = new AlertDialog.Builder(LoginActivity.this);
-
-                    show.setView(alertLayout);
-                    show.setCancelable(false);
-                    dialog_verifying = show.create();
-                    dialog_verifying.show();
-
-                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, verificationCode);
-                    signInWithPhoneAuthCredential(credential);
-
-                }
-            }
-        });
-
-        button3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (currentStep < stepView.getStepCount() - 1) {
-                    currentStep++;
-                    stepView.go(currentStep, true);
-                } else {
-                    stepView.done(true);
-                }
                 LayoutInflater inflater = getLayoutInflater();
-                View alertLayout= inflater.inflate(R.layout.profile_create_dialog,null);
+                View alertLayout= inflater.inflate(R.layout.processing_dialog,null);
                 AlertDialog.Builder show = new AlertDialog.Builder(LoginActivity.this);
+
                 show.setView(alertLayout);
                 show.setCancelable(false);
-                profile_dialog = show.create();
-                profile_dialog.show();
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        profile_dialog.dismiss();
-                        startActivity(new Intent(LoginActivity.this,RegistrationActivity.class));
-                        finish();
-                    }
-                },3000);
+                dialog_verifying = show.create();
+                dialog_verifying.show();
+
+                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, verificationCode);
+                signInWithPhoneAuthCredential(credential);
+
             }
         });
 
@@ -240,7 +202,9 @@ public class LoginActivity extends AppCompatActivity {
                             }
                             layout1.setVisibility(View.GONE);
                             layout2.setVisibility(View.GONE);
-                            layout3.setVisibility(View.VISIBLE);
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
                             // ...
                         } else {
 
