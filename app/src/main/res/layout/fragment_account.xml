@@ -60,6 +60,7 @@
 
                 <TextView
                     android:textColor="#000"
+                    android:textStyle="bold"
                     android:textAlignment="center"
                     android:id="@+id/user_personal"
                     android:layout_width="wrap_content"
@@ -73,6 +74,7 @@
                     android:layout_weight="1" />
 
                 <TextView
+                    android:textColor="#666"
                     android:textSize="17sp"
                     android:id="@+id/user_batches"
                     android:layout_width="wrap_content"
@@ -85,6 +87,7 @@
                     android:layout_weight="1" />
 
                 <TextView
+                    android:textColor="#666"
                     android:textSize="17sp"
                     android:id="@+id/user_details"
                     android:layout_width="wrap_content"

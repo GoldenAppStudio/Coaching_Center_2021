@@ -1,5 +1,7 @@
 package com.goldenappstudio.coachinginstitutes2020;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,16 +42,37 @@ public class Account extends Fragment {
         personal.setOnClickListener(v -> {
             userPersonalView.setVisibility(View.VISIBLE);
             fb.setVisibility(View.GONE);
+
+            personal.setTypeface(Typeface.DEFAULT_BOLD);
+            details.setTypeface(Typeface.DEFAULT);
+            batches.setTypeface(Typeface.DEFAULT);
+            personal.setTextColor(Color.parseColor("#000000"));
+            details.setTextColor(Color.parseColor("#888888"));
+            batches.setTextColor(Color.parseColor("#888888"));
         });
 
         batches.setOnClickListener(v -> {
             userPersonalView.setVisibility(View.GONE);
             fb.setVisibility(View.VISIBLE);
+
+            batches.setTypeface(Typeface.DEFAULT_BOLD);
+            details.setTypeface(Typeface.DEFAULT);
+            personal.setTypeface(Typeface.DEFAULT);
+            personal.setTextColor(Color.parseColor("#888888"));
+            details.setTextColor(Color.parseColor("#888888"));
+            batches.setTextColor(Color.parseColor("#000000"));
         });
 
         details.setOnClickListener(v -> {
             userPersonalView.setVisibility(View.GONE);
             fb.setVisibility(View.GONE);
+
+            details.setTypeface(Typeface.DEFAULT_BOLD);
+            batches.setTypeface(Typeface.DEFAULT);
+            personal.setTypeface(Typeface.DEFAULT);
+            personal.setTextColor(Color.parseColor("#888888"));
+            details.setTextColor(Color.parseColor("#000000"));
+            batches.setTextColor(Color.parseColor("#888888"));
         });
     }
 
