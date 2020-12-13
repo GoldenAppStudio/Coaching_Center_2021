@@ -1,24 +1,35 @@
 package com.goldenappstudio.coachinginstitutes2020;
+
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,10 +38,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static com.goldenappstudio.coachinginstitutes2020.MainActivity.fragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,37 +69,121 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         DatabaseReference databaseReference;
-        ProgressDialog progressDialog;
         List<TrendingVideo> list = new ArrayList<>();
         RecyclerView recyclerView;
         final TrendingVideoRecycle[] adapter = new TrendingVideoRecycle[1];
+        CardView complete_your_profile_card, free_study_material;
+        complete_your_profile_card = getView().findViewById(R.id.complete_your_profile_card);
+        free_study_material = getView().findViewById(R.id.free_study_material);
+        ImageView facebook = getView().findViewById(R.id.facebook_share);
+        ImageView twitter = getView().findViewById(R.id.twitter_share);
+        ImageView instagram = getView().findViewById(R.id.instagram_share);
+        ImageView whatsapp = getView().findViewById(R.id.whatsapp_share);
+        TextView textView = getView().findViewById(R.id.RAND_1);
+
+        // TODO : Change app name and message in shareIntent of social media
+        facebook.setOnClickListener(v -> {
+            try {
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Coaching Centre App");
+                String shareMessage = "\nLet me recommend you this application\n\n";
+                shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                startActivity(Intent.createChooser(shareIntent, "Choose from following"));
+            } catch (Exception e) {
+                //e.toString();
+            }
+        });
+        whatsapp.setOnClickListener(v -> {
+            try {
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Coaching Centre App");
+                String shareMessage = "\nLet me recommend you this application\n\n";
+                shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                startActivity(Intent.createChooser(shareIntent, "Choose from following"));
+            } catch (Exception e) {
+                //e.toString();
+            }
+        });
+        twitter.setOnClickListener(v -> {
+            try {
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Coaching Centre App");
+                String shareMessage = "\nLet me recommend you this application\n\n";
+                shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                startActivity(Intent.createChooser(shareIntent, "Choose from following"));
+            } catch (Exception e) {
+                //e.toString();
+            }
+        });
+        instagram.setOnClickListener(v -> {
+            try {
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Coaching Centre App");
+                String shareMessage = "\nLet me recommend you this application\n\n";
+                shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                startActivity(Intent.createChooser(shareIntent, "Choose from following"));
+            } catch (Exception e) {
+                //e.toString();
+            }
+        });
 
         recyclerView = getView().findViewById(R.id.trending_video_thumb_recycle);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.HORIZONTAL));
 
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Loading Data from Database");
-        progressDialog.show();
+        SkeletonScreen skeletonScreen = Skeleton.bind(recyclerView)
+                .adapter(adapter[0])
+                .load(R.layout.trending_video_recycler)
+                .show();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("treanding_videos/");
+        complete_your_profile_card.setOnClickListener(v -> {
+            FragmentChangeListener fc = (FragmentChangeListener) getActivity();
+            assert fc != null;
+            fc.replaceFragment(new Account());
+        });
+
+        free_study_material.setOnClickListener(v -> {
+            Dialog myDialog = new Dialog(this.getContext());
+            myDialog.setContentView(R.layout.show_popup);
+            TextView title = myDialog.findViewById(R.id.notification_title_popup);
+            TextView content = myDialog.findViewById(R.id.notification_content_popup);
+
+            title.setText("Free Study Material");
+            content.setText("No free study material found at this moment. Please try later. (You can search for free video courses in store)");
+
+            myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            myDialog.show();
+        });
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("store/videos/");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    TrendingVideo subService = dataSnapshot.getValue(TrendingVideo.class);
-                    list.add(subService);
-                }
+                if (snapshot.getChildren() == null) {
+                    textView.setVisibility(View.GONE);
+                } else {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        TrendingVideo trendingVideo = dataSnapshot.getValue(TrendingVideo.class);
+                        list.add(trendingVideo);
+                        skeletonScreen.hide();
+                    }
 
-                adapter[0] = new TrendingVideoRecycle(getActivity(), list);
-                recyclerView.setAdapter(adapter[0]);
-                progressDialog.dismiss();
+                    Collections.reverse(list);
+                    adapter[0] = new TrendingVideoRecycle(getActivity(), list);
+                    recyclerView.setAdapter(adapter[0]);
+                }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                progressDialog.dismiss();
             }
         });
     }
@@ -97,7 +197,6 @@ class TrendingVideoRecycle extends RecyclerView.Adapter<TrendingVideoRecycle.Vie
     View view;
     Context context;
     List<TrendingVideo> MainImageUploadInfoList;
-    public static String SUB_SERVICE_UID;
 
     public TrendingVideoRecycle(Context context, List<TrendingVideo> TempList) {
         this.MainImageUploadInfoList = TempList;
@@ -114,71 +213,107 @@ class TrendingVideoRecycle extends RecyclerView.Adapter<TrendingVideoRecycle.Vie
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         final TrendingVideo trendingVideo = MainImageUploadInfoList.get(position);
-        holder.title.setText(trendingVideo.getTitle());
-        holder.price.setText(trendingVideo.getPrice());
+        holder.title.setText(trendingVideo.getVideo_title());
+        if (trendingVideo.getVideo_price().isEmpty() || trendingVideo.getVideo_price().equals("0")) {
+            holder.price.setText("Free");
+        } else holder.price.setText(trendingVideo.getVideo_price());
+        holder.upload_time.setText(trendingVideo.getVideo_upload_time());
+        holder.duration.setText(trendingVideo.getVideo_duration());
+        holder.author.setText(String.format("By %s", trendingVideo.getVideo_teacher()));
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference gsReference = storage.getReferenceFromUrl("gs://coaching-institute-project.appspot.com/video_courses/videos/file_example_MP4_480_1_5MG.mp4");
+        StorageReference gsReference = storage.getReferenceFromUrl("gs://coaching-institute-project.appspot.com/store/videos/" + trendingVideo.getVideo_id() + ".mp4");
 
         gsReference.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(context).load(uri.toString()).into(holder.image)).addOnFailureListener(exception -> {
             // Handle any errors
         });
 
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), VideoPlayer.class);
-            SUB_SERVICE_UID = trendingVideo.getUID();
-            intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
+            if (trendingVideo.getVideo_price().equals("0") || trendingVideo.getVideo_price().isEmpty()) {
+                Intent intent = new Intent(v.getContext(), VideoPlayer.class);
+                intent.putExtra("video_title", trendingVideo.getVideo_title());
+                intent.putExtra("video_id", trendingVideo.getVideo_id());
+                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                Toast.makeText(context, "Free", Toast.LENGTH_SHORT).show();
+                context.startActivity(intent);
+            } else {
+                Intent intent = new Intent(v.getContext(), GooglePayTestActivity.class);
+                intent.putExtra("product_name", trendingVideo.getVideo_title());
+                intent.putExtra("product_price", trendingVideo.getVideo_price());
+                intent.putExtra("product_uid", trendingVideo.getVideo_id());
+                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                Toast.makeText(context, "Paid", Toast.LENGTH_SHORT).show();
+                context.startActivity(intent);
+            }
+
         });
     }
 
     @Override
     public int getItemCount() {
-        return MainImageUploadInfoList.size();
+        return Math.min(MainImageUploadInfoList.size(), 5);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title, price;
+        TextView title, price, duration, upload_time, author;
         ImageView image;
+
         public ViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.trending_video_title);
             price = itemView.findViewById(R.id.trending_video_price);
             image = itemView.findViewById(R.id.trending_video_thumb_recycle);
+            author = itemView.findViewById(R.id.trending_video_author);
+            duration = itemView.findViewById(R.id.duration_of_trending_video);
+            upload_time = itemView.findViewById(R.id.trending_video_upload_time);
         }
     }
 }
 
 class TrendingVideo {
-    private String title;
-    private String UID;
-    private String teacher;
-    private String price;
+    private String video_title, video_description, video_price, video_teacher, video_duration;
+    private String video_id, video_upload_time;
 
     public TrendingVideo() {
         //empty constructor needed
     }
 
-    public TrendingVideo(String title, String UID, String teacher, String price) {
-        this.title = title;
-        this.UID = UID;
-        this.price = price;
-        this.teacher = teacher;
+    public TrendingVideo(String video_title, String video_description, String video_upload_time,
+                         String video_teacher, String video_price, String video_id, String video_duration) {
+        this.video_title = video_title;
+        this.video_teacher = video_teacher;
+        this.video_price = video_price;
+        this.video_id = video_id;
+        this.video_description = video_description;
+        this.video_upload_time = video_upload_time;
+        this.video_duration = video_duration;
     }
 
-    public String getTitle() {
-        return title;
+    public String getVideo_title() {
+        return video_title;
     }
 
-    public String getPrice() {
-        return price;
+    public String getVideo_description() {
+        return video_description;
     }
 
-    public String getTeacher() {
-        return teacher;
+    public String getVideo_id() {
+        return video_id;
     }
 
-    public String getUID() {
-        return UID;
+    public String getVideo_duration() {
+        return video_duration;
+    }
+
+    public String getVideo_price() {
+        return video_price;
+    }
+
+    public String getVideo_teacher() {
+        return video_teacher;
+    }
+
+    public String getVideo_upload_time() {
+        return video_upload_time;
     }
 }

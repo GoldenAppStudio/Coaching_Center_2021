@@ -1,9 +1,12 @@
 package com.goldenappstudio.coachinginstitutes2020;
 
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,21 +32,18 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class NotificationFragment extends Fragment {
-
 
     public NotificationFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,19 +57,18 @@ public class NotificationFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         DatabaseReference databaseReference;
-        ProgressDialog progressDialog;
         List<Notification> list = new ArrayList<>();
         RecyclerView recyclerView;
         final NotificationRecycler[] adapter = new NotificationRecycler[1];
 
-        recyclerView = getView().findViewById(R.id.notification_recycle);
+        recyclerView = getView().findViewById(R.id.notification_recycler);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.HORIZONTAL));
 
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Loading Data from Database");
-        progressDialog.show();
+        SkeletonScreen skeletonScreen = Skeleton.bind(recyclerView)
+                .adapter(adapter[0])
+                .load(R.layout.notification_recycler)
+                .show();
 
         databaseReference = FirebaseDatabase.getInstance().getReference("notifications/");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -78,17 +79,14 @@ public class NotificationFragment extends Fragment {
                     list.add(subService);
                 }
 
+                Collections.reverse(list);
                 adapter[0] = new NotificationRecycler(getActivity(), list);
                 recyclerView.setAdapter(adapter[0]);
-                progressDialog.dismiss();
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                progressDialog.dismiss();
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
-
     }
 
     public void onSaveInstanceState() {
@@ -100,7 +98,6 @@ class NotificationRecycler extends RecyclerView.Adapter<NotificationRecycler.Vie
     View view;
     Context context;
     List<Notification> MainImageUploadInfoList;
-    public static String NOTIFICATION_UID;
 
     public NotificationRecycler(Context context, List<Notification> TempList) {
         this.MainImageUploadInfoList = TempList;
@@ -120,12 +117,18 @@ class NotificationRecycler extends RecyclerView.Adapter<NotificationRecycler.Vie
         holder.title.setText(notification.getTitle());
         holder.details.setText(String.format("by %s (%s)", notification.getTeacher(), notification.getTime()));
 
-        /*holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), VideoPlayer.class);
-            SUB_SERVICE_UID = trendingVideo.getUID();
-            intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-        });*/
+        holder.itemView.setOnClickListener(v -> {
+            Dialog myDialog = new Dialog(context);
+            myDialog.setContentView(R.layout.show_popup);
+            TextView title = myDialog.findViewById(R.id.notification_title_popup);
+            TextView content = myDialog.findViewById(R.id.notification_content_popup);
+
+            title.setText(notification.getTitle());
+            content.setText(notification.getContent());
+
+            myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            myDialog.show();
+        });
     }
 
     @Override
@@ -148,15 +151,20 @@ class Notification {
     private String title;
     private String time;
     private String teacher;
+    private String notification_uid;
+    private String content;
 
     public Notification() {
         //empty constructor needed
     }
 
-    public Notification(String title, String time, String teacher) {
+    public Notification(String title, String time,
+                        String teacher, String notification_uid, String content) {
         this.title = title;
         this.time = time;
         this.teacher = teacher;
+        this.notification_uid = notification_uid;
+        this.content = content;
     }
 
     public String getTitle() {
@@ -169,6 +177,14 @@ class Notification {
 
     public String getTime() {
         return time;
+    }
+
+    public String getNotification_uid() {
+        return notification_uid;
+    }
+
+    public String getContent() {
+        return content;
     }
 }
 

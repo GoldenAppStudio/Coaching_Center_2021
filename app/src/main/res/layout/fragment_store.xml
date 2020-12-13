@@ -1,14 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EEE"
     tools:context=".Store">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-</FrameLayout>
+        <!-- Toggle Buttons -->
+        <LinearLayout
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:background="#7579e7"
+                android:textAllCaps="false"
+                android:textColor="#FFF"
+                android:text="Videos"
+                android:id="@+id/store_video_button"
+                android:layout_width="80dp"
+                android:layout_height="35dp" />
+
+            <Button
+                android:layout_marginStart="8dp"
+                android:text="PDFs"
+                android:background="#BBB"
+                android:textAllCaps="false"
+                android:id="@+id/store_pdf_button"
+                android:layout_width="80dp"
+                android:layout_height="35dp" />
+
+            <Button
+                android:id="@+id/store_fsm_button"
+                android:layout_marginStart="8dp"
+                android:background="#BBB"
+                android:text="FSM"
+                android:textAllCaps="false"
+                android:layout_width="80dp"
+                android:layout_height="35dp" />
+
+        </LinearLayout>
+
+        <!-- Video Layout -->
+        <LinearLayout
+            android:id="@+id/store_video_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="15dp"
+                android:text="YOU MAY INTERESTED IN"
+                android:textAllCaps="true"
+                android:textColor="#777"
+                android:textSize="13sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/interest_video_thumb_recycle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="8dp"
+                android:clipToPadding="false"
+                android:scrollbars="horizontal" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="15dp"
+                android:text="ALL VIDEOS"
+                android:textAllCaps="true"
+                android:textColor="#777"
+                android:textSize="13sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/more_video_thumb_recycle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="8dp"
+                android:clipToPadding="false" />
+
+        </LinearLayout>
+
+        <!-- PDFs Layout -->
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/store_pdf_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="15dp"
+                android:text="Free PDFs to download"
+                android:textAllCaps="true"
+                android:textColor="#777"
+                android:textSize="13sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/store_pdf_recyclerview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="3dp"
+                android:clipToPadding="false" />
+
+        </LinearLayout>
+
+        <!-- FSM Layout -->
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/store_fsm_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="15dp"
+                android:text="Free Study Materials"
+                android:textAllCaps="true"
+                android:textColor="#777"
+                android:textSize="13sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/store_fsm_recyclerview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="3dp"
+                android:clipToPadding="false" />
+
+        </LinearLayout>
+
+        <!-- Just for under bottom navigation buttons -->
+       <!-- <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="20dp"
+                    android:text=""
+                    android:textColor="#000"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>-->
+
+    </LinearLayout>
+
+</ScrollView>

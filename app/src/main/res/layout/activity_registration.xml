@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:id="@+id/scroll"
-    android:layout_height="match_parent"
-    android:background="#f5f9fc"
+    android:layout_height="wrap_content"
+    android:background="#fff"
     tools:context=".RegistrationActivity">
 
     <LinearLayout
@@ -21,41 +20,55 @@
             android:textColor="#fff"
             android:textSize="18dp"/>
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/setup_image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+        <ImageView
+            android:id="@+id/image_edit"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
             android:layout_gravity="center"
             android:layout_marginTop="15dp"
-            android:src="@drawable/choose"
-            app:civ_border_color="#999999"
-            app:civ_border_width="2dp" />
+            android:src="@drawable/user_image_placeholder"
+             />
+
         <TextView
             android:layout_marginTop="10dp"
-            android:textSize="12dp"
+            android:textSize="10sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tap to choose Your Image/Logo (optional)"
+            android:text="Tap to choose your image"
             android:layout_gravity="center"
             android:typeface="sans"
-            android:textColor="#474B4F"/>
+            android:textColor="#474B4F"
+            tools:ignore="SmallSp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="15dp"
+            android:textStyle="bold"
+            android:text="BASIC INFORMATION"
+            android:textAllCaps="true"
+            android:textColor="#000"
+            android:textSize="15sp" />
 
         <TextView
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="12dp"
+            android:textSize="12sp"
             android:layout_width="wrap_content"
             android:typeface="sans"
             android:layout_height="wrap_content"
-            android:text="Provider's Name"
+            android:text="Full Name"
             android:textColor="#474B4F"
             />
 
         <EditText
+            android:layout_marginTop="3dp"
             android:typeface="sans"
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
-            android:id="@+id/fullname"
+            android:id="@+id/name_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edittext_background"
@@ -64,110 +77,347 @@
         <TextView
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="10dp"
+            android:textSize="12sp"
             android:layout_width="wrap_content"
             android:typeface="sans"
             android:layout_height="wrap_content"
-            android:text="Company/Business (Optional)"
+            android:text="Father's Name"
             android:textColor="#474B4F"
             />
 
         <EditText
+            android:layout_marginTop="3dp"
             android:typeface="sans"
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
-            android:id="@+id/stu_class"
+            android:id="@+id/father_name_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edittext_background"
             android:padding="5dp"/>
 
         <TextView
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="10dp"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:typeface="sans"
+            android:layout_height="wrap_content"
+            android:text="Mother's Name"
+            android:textColor="#474B4F"
+            />
+
+        <EditText
+            android:layout_marginTop="3dp"
             android:typeface="sans"
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
+            android:id="@+id/mother_name_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_background"
+            android:padding="5dp"/>
+
+        <TextView
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="10dp"
+            android:textSize="12sp"
             android:layout_width="wrap_content"
+            android:typeface="sans"
+            android:layout_height="wrap_content"
+            android:text="Phone"
+            android:textColor="#474B4F"
+            />
+
+        <EditText
+            android:layout_marginTop="3dp"
+            android:typeface="sans"
+            android:inputType="number"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:id="@+id/phone_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_background"
+            android:padding="5dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="15dp"
+            android:textStyle="bold"
+            android:text="PERSONAL DETAILS"
+            android:textAllCaps="true"
+            android:textColor="#000"
+            android:textSize="15sp" />
+
+
+        <TextView
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="12dp"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:typeface="sans"
+            android:layout_height="wrap_content"
+            android:text="Date of Birth"
+            android:textColor="#474B4F"
+            />
+
+        <EditText
+            android:layout_marginTop="3dp"
+            android:typeface="sans"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:id="@+id/dob_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_background"
+            android:padding="5dp"/>
+
+        <TextView
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="10dp"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:typeface="sans"
             android:layout_height="wrap_content"
             android:text="Email"
             android:textColor="#474B4F"
-            android:layout_marginTop="15dp"/>
+            />
+
         <EditText
+            android:layout_marginTop="3dp"
             android:typeface="sans"
             android:layout_marginStart="25dp"
-            android:id="@+id/birthpalce"
             android:layout_marginEnd="25dp"
+            android:id="@+id/email_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
             android:background="@drawable/edittext_background"
-            android:padding="5dp" />
+            android:padding="5dp"/>
 
         <TextView
-            android:typeface="sans"
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
+            android:layout_marginTop="10dp"
+            android:textSize="12sp"
             android:layout_width="wrap_content"
+            android:typeface="sans"
             android:layout_height="wrap_content"
-            android:text="Choose State"
-            android:layout_marginTop="15dp"
+            android:text="Gender"
             android:textColor="#474B4F"
             />
 
-
-        <TextView
+        <EditText
+            android:layout_marginTop="3dp"
             android:typeface="sans"
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
+            android:id="@+id/gender_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_background"
+            android:padding="5dp"/>
+
+        <TextView
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="10dp"
+            android:textSize="12sp"
             android:layout_width="wrap_content"
+            android:typeface="sans"
+            android:layout_height="wrap_content"
+            android:text="Aadhar No."
+            android:textColor="#474B4F"
+            />
+
+        <EditText
+            android:layout_marginTop="3dp"
+            android:typeface="sans"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:id="@+id/aadhar_no_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_background"
+            android:padding="5dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="15dp"
+            android:textStyle="bold"
+            android:text="ADDRESS"
+            android:textAllCaps="true"
+            android:textColor="#000"
+            android:textSize="15sp" />
+
+
+        <TextView
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="12dp"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:typeface="sans"
+            android:layout_height="wrap_content"
+            android:text="Nationality"
+            android:textColor="#474B4F"
+            />
+
+        <EditText
+            android:layout_marginTop="3dp"
+            android:typeface="sans"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:id="@+id/nationality_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_background"
+            android:padding="5dp"/>
+
+        <TextView
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="10dp"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:typeface="sans"
+            android:layout_height="wrap_content"
+            android:text="State"
+            android:textColor="#474B4F"
+            />
+
+        <EditText
+            android:layout_marginTop="3dp"
+            android:typeface="sans"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:id="@+id/state_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_background"
+            android:padding="5dp"/>
+
+        <TextView
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="10dp"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:typeface="sans"
             android:layout_height="wrap_content"
             android:text="District"
             android:textColor="#474B4F"
-            android:layout_marginTop="15dp"/>
+            />
 
-        <TextView
-            android:typeface="sans"
-            android:layout_marginStart="25dp"
-            android:layout_marginEnd="25dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="City/Town/Village/Address"
-            android:textColor="#474B4F"/>
         <EditText
+            android:layout_marginTop="3dp"
             android:typeface="sans"
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
-            android:id="@+id/gender"
+            android:id="@+id/district_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edittext_background"
             android:padding="5dp"/>
 
         <TextView
-            android:typeface="sans"
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
+            android:layout_marginTop="10dp"
+            android:textSize="12sp"
             android:layout_width="wrap_content"
+            android:typeface="sans"
             android:layout_height="wrap_content"
-            android:text="Description"
+            android:text="City/Town/Village"
             android:textColor="#474B4F"
-            android:layout_marginTop="15dp"/>
+            />
+
         <EditText
+            android:layout_marginTop="3dp"
             android:typeface="sans"
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
-            android:id="@+id/email"
+            android:id="@+id/village_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edittext_background"
             android:padding="5dp"/>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="15dp"
+            android:textStyle="bold"
+            android:text="EDUCATION DETAILS"
+            android:textAllCaps="true"
+            android:textColor="#000"
+            android:textSize="15sp" />
+
+
+        <TextView
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="12dp"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:typeface="sans"
+            android:layout_height="wrap_content"
+            android:text="10th Total Mark"
+            android:textColor="#474B4F"
+            />
+
+        <EditText
+            android:layout_marginTop="3dp"
+            android:typeface="sans"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:id="@+id/tenth_marks_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_background"
+            android:padding="5dp"/>
+
+        <TextView
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="10dp"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:typeface="sans"
+            android:layout_height="wrap_content"
+            android:text="12th Total Marks"
+            android:textColor="#474B4F"
+            />
+
+        <EditText
+            android:layout_marginTop="3dp"
+            android:typeface="sans"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:id="@+id/twelth_marks_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_background"
+            android:padding="5dp"/>
+
 
         <Button
             android:typeface="sans"
             android:background="@drawable/gradient_button_main"
             android:textColor="#fff"
-            android:textSize="18dp"
-            android:id="@+id/continueRegister"
+            android:textSize="18sp"
+            android:id="@+id/submit_edit"
             android:layout_marginTop="35dp"
             android:layout_marginEnd="10dp"
             android:layout_marginStart="10dp"

@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
     private int currentStep = 0;
     LinearLayout layout1,layout2;
     StepView stepView;
-    AlertDialog dialog_verifying,profile_dialog;
+    AlertDialog dialog_verifying, profile_dialog;
 
     private static String uniqueIdentifier = null;
     private static final String UNIQUE_ID = "UNIQUE_ID";

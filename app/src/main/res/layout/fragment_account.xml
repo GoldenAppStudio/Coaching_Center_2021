@@ -39,7 +39,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="20dp"
                     android:layout_toEndOf="@+id/user_image"
-                    android:text="Aman Kaushik"
+                    android:text=""
                     android:textColor="#000"
                     android:textSize="20sp"
                     android:textStyle="bold|italic" />

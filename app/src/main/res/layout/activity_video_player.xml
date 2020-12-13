@@ -3,12 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="265dp"
+    android:layout_height="wrap_content"
     android:id="@+id/video_layout"
     android:background="#000"
     tools:context=".VideoPlayer">
 
-    <com.universalvideoview.UniversalVideoView
+    <com.google.android.exoplayer2.ui.StyledPlayerView
+        android:id="@+id/player_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:show_buffering="when_playing"
+        app:show_subtitle_button="true"
+        app:use_sensor_rotation="true"
+        app:show_shuffle_button="true"/>
+
+    <!--<com.universalvideoview.UniversalVideoView
         android:id="@+id/videoView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -28,7 +37,7 @@
         android:layout_centerInParent="true"
         android:id="@+id/buffer_progress"
         android:layout_width="60dp"
-        android:layout_height="60dp" />
+        android:layout_height="60dp" />-->
 
     <!-- <TextView
          android:background="#457aAA"
