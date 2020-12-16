@@ -19,6 +19,8 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.shrikanthravi.customnavigationdrawer2.data.MenuItem;
 import com.shrikanthravi.customnavigationdrawer2.widget.SNavigationDrawer;
 
@@ -67,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements FragmentChangeLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (getSupportActionBar() != null) getSupportActionBar().hide();
-
         if (!isNetworkAvailable(this)) {
             new AlertDialog.Builder(this)
                     .setTitle("Network Error!")
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements FragmentChangeLis
                             (dialog, which) -> quit()).create().show();
         }
 
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         BottomNavigationView mainbottomNav = findViewById(R.id.mainBottomNav);
 
         initializeFragment();

@@ -17,11 +17,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 
 public class GooglePayTestActivity extends AppCompatActivity {
 
-    Button send;
     String TAG = "main";
     final int UPI_PAYMENT = 0;
 
@@ -30,25 +33,26 @@ public class GooglePayTestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_pay_test);
 
-        send = findViewById(R.id.send);
+        Button send = findViewById(R.id.send);
         TextView product_name = findViewById(R.id.product_name);
         TextView product_price = findViewById(R.id.product_price);
         TextView product_details = findViewById(R.id.product_details);
 
-        product_name.setText(getIntent().getStringExtra("product_name"));
-        product_price.setText(getIntent().getStringExtra("product_price"));
+
+        product_name.setText(getIntent().getStringExtra("video_title"));
+        product_price.setText(getIntent().getStringExtra("video_price"));
        // product_details.setText("" + getIntent().getStringExtra("product_name") + " was uploader" + getIntent().getStringExtra(""));
 
         send.setOnClickListener(view -> {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(GooglePayTestActivity.this, R.style.MyDialogTheme);
-            builder.setMessage("Are you sure you want to process payment of  " + getIntent().getStringExtra("product_price") + " ?")
+            builder.setMessage("Are you sure you want to process payment of Rs " + getIntent().getStringExtra("video_price") + "?")
                     .setTitle("Continue?")
                     .setCancelable(false)
-
+                    // ranbirsharma127033@oksbi
                     .setPositiveButton("Continue", (dialog, id) -> {
-                        payUsingUpi(getIntent().getStringExtra("product_name"), "ranbirsharma127033@oksbi",
-                                "Paid Course", getIntent().getStringExtra("product_price"));
+                        payUsingUpi(getIntent().getStringExtra("video_title"), "9728507946@ybl",
+                                "Paid Course", getIntent().getStringExtra("video_price"));
                     })
                     .setNegativeButton("No", (dialog, id) -> dialog.cancel());
             AlertDialog alert = builder.create();
@@ -88,35 +92,28 @@ public class GooglePayTestActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.e("main ", "response " + resultCode);
-        /*
-       E/main: response -1
-       E/UPI: onActivityResult: txnId=AXI4a3428ee58654a938811812c72c0df45&responseCode=00&Status=SUCCESS&txnRef=922118921612
-       E/UPIPAY: upiPaymentDataOperation: txnId=AXI4a3428ee58654a938811812c72c0df45&responseCode=00&Status=SUCCESS&txnRef=922118921612
-       E/UPI: payment successfull: 922118921612
-         */
-        switch (requestCode) {
-            case UPI_PAYMENT:
-                if ((RESULT_OK == resultCode) || (resultCode == 11)) {
-                    if (data != null) {
-                        String trxt = data.getStringExtra("response");
-                        Log.e("UPI", "onActivityResult: " + trxt);
-                        ArrayList<String> dataList = new ArrayList<>();
-                        dataList.add(trxt);
-                        upiPaymentDataOperation(dataList);
-                    } else {
-                        Log.e("UPI", "onActivityResult: " + "Return data is null");
-                        ArrayList<String> dataList = new ArrayList<>();
-                        dataList.add("nothing");
-                        upiPaymentDataOperation(dataList);
-                    }
+
+        if (requestCode == UPI_PAYMENT) {
+            if ((RESULT_OK == resultCode) || (resultCode == 11)) {
+                if (data != null) {
+                    String trxt = data.getStringExtra("response");
+                    Log.e("UPI", "onActivityResult: " + trxt);
+                    ArrayList<String> dataList = new ArrayList<>();
+                    dataList.add(trxt);
+                    upiPaymentDataOperation(dataList);
                 } else {
-                    //when user simply back without payment
                     Log.e("UPI", "onActivityResult: " + "Return data is null");
                     ArrayList<String> dataList = new ArrayList<>();
                     dataList.add("nothing");
                     upiPaymentDataOperation(dataList);
                 }
-                break;
+            } else {
+                //when user simply back without payment
+                Log.e("UPI", "onActivityResult: " + "Return data is null");
+                ArrayList<String> dataList = new ArrayList<>();
+                dataList.add("nothing");
+                upiPaymentDataOperation(dataList);
+            }
         }
     }
 
@@ -128,9 +125,9 @@ public class GooglePayTestActivity extends AppCompatActivity {
             if (str == null) str = "discard";
             String status = "";
             String approvalRefNo = "";
-            String response[] = str.split("&");
-            for (int i = 0; i < response.length; i++) {
-                String equalStr[] = response[i].split("=");
+            String[] response = str.split("&");
+            for (String s : response) {
+                String[] equalStr = s.split("=");
                 if (equalStr.length >= 2) {
                     if (equalStr[0].toLowerCase().equals("Status".toLowerCase())) {
                         status = equalStr[1].toLowerCase();
@@ -146,6 +143,7 @@ public class GooglePayTestActivity extends AppCompatActivity {
                 //Code to handle successful transaction here.
                 Toast.makeText(GooglePayTestActivity.this, "Transaction successful.", Toast.LENGTH_SHORT).show();
                 Log.e("UPI", "payment successfull: " + approvalRefNo);
+                video_purchased();
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
                 Toast.makeText(GooglePayTestActivity.this, "Payment cancelled by user.", Toast.LENGTH_SHORT).show();
                 Log.e("UPI", "Cancelled by user: " + approvalRefNo);
@@ -163,13 +161,19 @@ public class GooglePayTestActivity extends AppCompatActivity {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager != null) {
             NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.isConnected()
+            return netInfo != null && netInfo.isConnected()
                     && netInfo.isConnectedOrConnecting()
-                    && netInfo.isAvailable()) {
-                return true;
-            }
+                    && netInfo.isAvailable();
         }
         return false;
     }
 
+    public void video_purchased() {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference("users");
+        db.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("purchased_courses")
+                .child(db.push().getKey())
+                .child("video_id")
+                .setValue(getIntent().getStringExtra("video_id"));
+    }
 }

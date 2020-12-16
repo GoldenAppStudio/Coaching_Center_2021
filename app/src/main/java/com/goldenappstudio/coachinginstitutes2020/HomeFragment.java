@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -233,19 +234,53 @@ class TrendingVideoRecycle extends RecyclerView.Adapter<TrendingVideoRecycle.Vie
                 intent.putExtra("video_title", trendingVideo.getVideo_title());
                 intent.putExtra("video_id", trendingVideo.getVideo_id());
                 intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                Toast.makeText(context, "Free", Toast.LENGTH_SHORT).show();
                 context.startActivity(intent);
             } else {
-                Intent intent = new Intent(v.getContext(), GooglePayTestActivity.class);
-                intent.putExtra("product_name", trendingVideo.getVideo_title());
-                intent.putExtra("product_price", trendingVideo.getVideo_price());
-                intent.putExtra("product_uid", trendingVideo.getVideo_id());
-                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                Toast.makeText(context, "Paid", Toast.LENGTH_SHORT).show();
-                context.startActivity(intent);
+                if (video_already_purchased(trendingVideo.getVideo_id())) {
+                    Intent intent = new Intent(v.getContext(), VideoPlayer.class);
+                    intent.putExtra("video_title", trendingVideo.getVideo_title());
+                    intent.putExtra("video_id", trendingVideo.getVideo_id());
+                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                } else {
+                    Intent intent = new Intent(v.getContext(), GooglePayTestActivity.class);
+                    intent.putExtra("video_title", trendingVideo.getVideo_title());
+                    intent.putExtra("video_price", trendingVideo.getVideo_price());
+                    intent.putExtra("video_id", trendingVideo.getVideo_id());
+                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
             }
 
         });
+    }
+
+    public boolean video_already_purchased(String video_id) {
+        final int[] rand = new int[1];
+        DatabaseReference db = FirebaseDatabase.getInstance()
+                .getReference("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        db.child("purchased_videos").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!snapshot.exists()) {
+                    rand[0] = 0;
+                } else {
+                    for(DataSnapshot ds : snapshot.getChildren()) {
+                        if(ds.child("video_id").getValue().toString().equals(video_id)) {
+                            rand[0] = 1;
+                        } else rand[0] = 0;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        return rand[0] != 0;
     }
 
     @Override

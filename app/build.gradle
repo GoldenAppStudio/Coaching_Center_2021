@@ -73,6 +73,8 @@ dependencies {
     // Exoplayer Video Player ...
     implementation 'com.google.android.exoplayer:exoplayer:2.12.2'
 
+    implementation 'androidx.browser:browser:1.3.0'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

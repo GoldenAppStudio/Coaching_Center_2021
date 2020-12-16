@@ -67,7 +67,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:text="----"
-                        android:textColor="#3bc"
+                        android:textColor="#d00"
                         android:textSize="13sp" />
 
                     <TextView
