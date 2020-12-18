@@ -33,6 +33,7 @@ public class GooglePayTestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_pay_test);
 
+        getSupportActionBar().setTitle("Payment Authentication");
         Button send = findViewById(R.id.send);
         TextView product_name = findViewById(R.id.product_name);
         TextView product_price = findViewById(R.id.product_price);

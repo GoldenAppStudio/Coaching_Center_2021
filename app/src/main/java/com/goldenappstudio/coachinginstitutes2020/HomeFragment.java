@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +29,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.ethanhua.skeleton.BuildConfig;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.firebase.auth.FirebaseAuth;
@@ -55,19 +57,38 @@ import static com.goldenappstudio.coachinginstitutes2020.MainActivity.fragment;
 public class HomeFragment extends Fragment {
     public HomeFragment() {
         // Required empty public constructor
+
     }
+
+
+    ViewFlipper viewFlipper;
+    CardView mCardViewShare;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
+
+        View rootView =  inflater.inflate(R.layout.fragment_home, container, false);
+
+
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        viewFlipper = getView().findViewById(R.id.view_flipper);
+        viewFlipper.setInAnimation(this.getContext(),android.R.anim.slide_in_left);
+        viewFlipper.setOutAnimation(this.getContext(),android.R.anim.slide_out_right);
+        viewFlipper.setAutoStart(true);
+        viewFlipper.setFlipInterval(3000);
+        viewFlipper.startFlipping();
+
+
 
         DatabaseReference databaseReference;
         List<TrendingVideo> list = new ArrayList<>();
@@ -76,63 +97,23 @@ public class HomeFragment extends Fragment {
         CardView complete_your_profile_card, free_study_material;
         complete_your_profile_card = getView().findViewById(R.id.complete_your_profile_card);
         free_study_material = getView().findViewById(R.id.free_study_material);
-        ImageView facebook = getView().findViewById(R.id.facebook_share);
-        ImageView twitter = getView().findViewById(R.id.twitter_share);
-        ImageView instagram = getView().findViewById(R.id.instagram_share);
-        ImageView whatsapp = getView().findViewById(R.id.whatsapp_share);
-        TextView textView = getView().findViewById(R.id.RAND_1);
 
-        // TODO : Change app name and message in shareIntent of social media
-        facebook.setOnClickListener(v -> {
-            try {
-                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.setType("text/plain");
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Coaching Centre App");
-                String shareMessage = "\nLet me recommend you this application\n\n";
-                shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
-                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                startActivity(Intent.createChooser(shareIntent, "Choose from following"));
-            } catch (Exception e) {
-                //e.toString();
-            }
-        });
-        whatsapp.setOnClickListener(v -> {
-            try {
-                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.setType("text/plain");
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Coaching Centre App");
-                String shareMessage = "\nLet me recommend you this application\n\n";
-                shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
-                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                startActivity(Intent.createChooser(shareIntent, "Choose from following"));
-            } catch (Exception e) {
-                //e.toString();
-            }
-        });
-        twitter.setOnClickListener(v -> {
-            try {
-                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.setType("text/plain");
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Coaching Centre App");
-                String shareMessage = "\nLet me recommend you this application\n\n";
-                shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
-                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                startActivity(Intent.createChooser(shareIntent, "Choose from following"));
-            } catch (Exception e) {
-                //e.toString();
-            }
-        });
-        instagram.setOnClickListener(v -> {
-            try {
-                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.setType("text/plain");
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Coaching Centre App");
-                String shareMessage = "\nLet me recommend you this application\n\n";
-                shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
-                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                startActivity(Intent.createChooser(shareIntent, "Choose from following"));
-            } catch (Exception e) {
-                //e.toString();
+        TextView textView = getView().findViewById(R.id.RAND_1);
+        mCardViewShare = getView().findViewById(R.id.cardViewShare);
+
+        mCardViewShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Intent shareIntent = new Intent();
+                    shareIntent.setAction(Intent.ACTION_SEND);
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, "Download Coaching Institute application for preparation of govt jobs and learning. Download Link\n"+"https://play.google.com/store/apps/details?id=com.goldenappstudio.coachinginstitutes2020");
+                    shareIntent.setType("text/plane");
+                    startActivity(Intent.createChooser(shareIntent, "Share Coaching App via"));
+                } catch (Exception e) {
+                    //e.toString();
+                }
+
             }
         });
 

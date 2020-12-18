@@ -10,7 +10,7 @@
         android:layout_width="150dp"
         android:layout_height="170dp"
         style="@style/SpinKitView.Large.CubeGrid"
-        app:SpinKit_Color="@color/colorPrimary"/>
+        app:SpinKit_Color="#610B38"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

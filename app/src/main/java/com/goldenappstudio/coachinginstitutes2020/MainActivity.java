@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements FragmentChangeLis
                             (dialog, which) -> quit()).create().show();
         }
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         BottomNavigationView mainbottomNav = findViewById(R.id.mainBottomNav);
 
         initializeFragment();
@@ -112,10 +111,10 @@ public class MainActivity extends AppCompatActivity implements FragmentChangeLis
         //Use the MenuItem given by this library and not the default one.
         //First parameter is the title of the menu item and then the second parameter is the image which will be the background of the menu item.
 
-        menuItems.add(new MenuItem("My Account", R.drawable.news_bg));
+        menuItems.add(new MenuItem("Home", R.drawable.news_bg));
+        menuItems.add(new MenuItem("My Profile", R.drawable.news_bg));
         menuItems.add(new MenuItem("Log Out", R.drawable.news_bg));
         menuItems.add(new MenuItem("Contact Us", R.drawable.news_bg));
-        menuItems.add(new MenuItem("Online Quiz", R.drawable.news_bg));
         menuItems.add(new MenuItem("Rate this app", R.drawable.news_bg));
         menuItems.add(new MenuItem("Share this app", R.drawable.news_bg));
         menuItems.add(new MenuItem("Report bugs", R.drawable.news_bg));
@@ -141,10 +140,16 @@ public class MainActivity extends AppCompatActivity implements FragmentChangeLis
                 case 0: {
                     // My Account
                     FragmentChangeListener fc = (FragmentChangeListener) MainActivity.this;
-                    fc.replaceFragment(new Account());
+                    fc.replaceFragment(new HomeFragment());
                     break;
                 }
                 case 1: {
+                    // My Account
+                    FragmentChangeListener fc = (FragmentChangeListener) MainActivity.this;
+                    fc.replaceFragment(new Account());
+                    break;
+                }
+                case 2: {
                     // Log Out
                     FirebaseAuth.getInstance().signOut();
                     Toast.makeText(this, "You have been logged out.", Toast.LENGTH_SHORT).show();
@@ -153,18 +158,13 @@ public class MainActivity extends AppCompatActivity implements FragmentChangeLis
                     finish();
                     break;
                 }
-                case 2: {
+                case 3: {
                     // Contact Us
                     Intent intent = new Intent(MainActivity.this, ContactUs.class);
                     startActivity(intent);
                     break;
                 }
-                case 3: {
-                    // Online Quiz
-                    Intent intent = new Intent(MainActivity.this, OnlineQuiz.class);
-                    startActivity(intent);
-                    break;
-                }
+
                 case 4: {
                     // Rate Us
                     // TODO : Change package name here ...
@@ -182,9 +182,9 @@ public class MainActivity extends AppCompatActivity implements FragmentChangeLis
                     // TODO : Change EXTRA_TEXT here ...
                     Intent shareIntent = new Intent();
                     shareIntent.setAction(Intent.ACTION_SEND);
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, "Download Find Service App to find almost every type of services from home. Download Link\n"+"https://play.google.com/store/apps/details?id=com.goldenappstudio.service_app");
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, "Download Coaching Institute application for preparation of govt jobs and learning. Download Link\n"+"https://play.google.com/store/apps/details?id=com.goldenappstudio.coachinginstitutes2020");
                     shareIntent.setType("text/plane");
-                    startActivity(Intent.createChooser(shareIntent, "Share All Service App via"));
+                    startActivity(Intent.createChooser(shareIntent, "Share Coaching App via"));
                     break;
                 }
                 case 6: {
@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements FragmentChangeLis
                     // TODO : Change subject here ...
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"studiogoldenapp@gmail.com"});
-                    intent.putExtra(Intent.EXTRA_SUBJECT, "Bug in Coatching App...");
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Bugs in Coaching App...");
                     intent.putExtra(Intent.EXTRA_TEXT, "Body of the content here...");
                     intent.putExtra(Intent.EXTRA_CC, "mailcc@gmail.com");
                     intent.setType("text/html");

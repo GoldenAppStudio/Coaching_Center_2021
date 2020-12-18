@@ -44,6 +44,7 @@ public class ContactUs extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_us);
 
+        getSupportActionBar().setTitle("Contact Us");
         mListView = findViewById(R.id.list_view_sp_profile);
 
         SpeedDialView speedDialView = findViewById(R.id.speedDial);

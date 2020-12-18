@@ -9,6 +9,7 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="120dp"
+        android:layout_below="@+id/toolbar"
         android:layout_height="120dp"
         android:textStyle="bold"
         android:src="@drawable/panda_dribbble"

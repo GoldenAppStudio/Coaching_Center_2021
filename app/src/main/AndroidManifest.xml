@@ -16,12 +16,15 @@
         android:configChanges="orientation|screenSize|layoutDirection"
         android:theme="@style/AppTheme">
         <activity android:name=".FreeStudyMaterial" />
-        <activity android:name=".ContactUs" />
+        <activity android:name=".ContactUs"
+            android:parentActivityName=".ContactUs"/>
         <activity android:name=".OnlineQuiz" />
-        <activity android:name=".GooglePayTestActivity" />
+        <activity android:name=".GooglePayTestActivity"
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".VideoPlayer" android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Second" />
-        <activity android:name=".RegistrationActivity" />
+        <activity android:name=".RegistrationActivity"
+            android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />

@@ -14,13 +14,13 @@
             android:id="@+id/first"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary">
+            android:background="@drawable/gradient_main">
             <com.shuhart.stepview.StepView
                 android:id="@+id/step_view"
                 android:layout_width="209dp"
                 android:layout_height="37dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="25dp"
                 android:padding="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -88,7 +88,7 @@
                 android:layout_marginTop="20dp"
                 android:textColor="#000"
                 android:typeface="serif"
-                android:text="Tap Next to verify your account with your phone number. You don't need to enter verification code manually if the number install in this device..."/>
+                android:text="Tap Next to verify your account with your phone number.."/>
             <Button
                 android:background="@drawable/gradient_button_main"
                 android:textColor="#fff"
@@ -156,7 +156,7 @@
                 app:itemRadius="4dp"
                 app:itemSpacing="5dp"
                 app:itemWidth="36dp"
-                app:lineColor="#008577"
+                app:lineColor="#610B38"
                 app:lineWidth="2dp"
                 app:viewType="rectangle" />
 

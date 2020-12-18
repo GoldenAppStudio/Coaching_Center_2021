@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_screen3">
+    android:background="@drawable/gradient_main">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -32,7 +32,7 @@
             android:paddingLeft="@dimen/desc_padding"
             android:paddingRight="@dimen/desc_padding"
             android:typeface="serif"
-            android:text="Get in touch with service provider directly and find a great discount to negotiate with service providers.\nFind best discount on every single service we offer!"
+            android:text="We provide best surrounding for your education "
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:textSize="@dimen/slide_desc" />

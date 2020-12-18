@@ -62,6 +62,8 @@ public class RegistrationActivity extends AppCompatActivity {
 
         fetch_data();
 
+        getSupportActionBar().setTitle("Register Info");
+
         submit.setOnClickListener(v -> {
             if(FirebaseAuth.getInstance().getCurrentUser() != null) {
                 USER_ID = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -115,34 +117,37 @@ public class RegistrationActivity extends AppCompatActivity {
         firebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.child("name").getValue().toString().equals("N/A")) name.setText("");
-                else name.setText(snapshot.child("name").getValue().toString());
-                if(snapshot.child("fathers_name").getValue().toString().equals("N/A")) father.setText("");
-                else father.setText(snapshot.child("fathers_name").getValue().toString());
-                if(snapshot.child("mothers_name").getValue().toString().equals("N/A")) mother.setText("");
-                else mother.setText(snapshot.child("mothers_name").getValue().toString());
-                if(snapshot.child("phone").getValue().toString().equals("N/A")) phone.setText("");
-                else phone.setText(snapshot.child("phone").getValue().toString());
-                if(snapshot.child("dob").getValue().toString().equals("N/A")) dob.setText("");
-                else dob.setText(snapshot.child("dob").getValue().toString());
-                if(snapshot.child("email").getValue().toString().equals("N/A")) email.setText("");
-                else email.setText(snapshot.child("email").getValue().toString());
-                if(snapshot.child("gender").getValue().toString().equals("N/A")) gender.setText("");
-                else gender.setText(snapshot.child("gender").getValue().toString());
-                if(snapshot.child("aadhar").getValue().toString().equals("N/A")) aadhar.setText("");
-                else aadhar.setText(snapshot.child("aadhar").getValue().toString());
-                if(snapshot.child("nationality").getValue().toString().equals("N/A")) nationality.setText("");
-                else nationality.setText(snapshot.child("nationality").getValue().toString());
-                if(snapshot.child("state").getValue().toString().equals("N/A")) state.setText("");
-                else state.setText(snapshot.child("state").getValue().toString());
-                if(snapshot.child("district").getValue().toString().equals("N/A")) district.setText("");
-                else district.setText(snapshot.child("district").getValue().toString());
-                if(snapshot.child("village").getValue().toString().equals("N/A")) village.setText("");
-                else village.setText(snapshot.child("village").getValue().toString());
-                if(snapshot.child("tenth").getValue().toString().equals("N/A")) tenth.setText("");
-                else tenth.setText(snapshot.child("tenth").getValue().toString());
-                if(snapshot.child("twelve").getValue().toString().equals("N/A")) twelve.setText("");
-                else twelve.setText(snapshot.child("twelve").getValue().toString());
+                if(snapshot.exists()) {
+                    if(snapshot.child("name").getValue().toString().equals("N/A")) name.setText("");
+                    else name.setText(snapshot.child("name").getValue().toString());
+                    if(snapshot.child("fathers_name").getValue().toString().equals("N/A")) father.setText("");
+                    else father.setText(snapshot.child("fathers_name").getValue().toString());
+                    if(snapshot.child("mothers_name").getValue().toString().equals("N/A")) mother.setText("");
+                    else mother.setText(snapshot.child("mothers_name").getValue().toString());
+                    if(snapshot.child("phone").getValue().toString().equals("N/A")) phone.setText("");
+                    else phone.setText(snapshot.child("phone").getValue().toString());
+                    if(snapshot.child("dob").getValue().toString().equals("N/A")) dob.setText("");
+                    else dob.setText(snapshot.child("dob").getValue().toString());
+                    if(snapshot.child("email").getValue().toString().equals("N/A")) email.setText("");
+                    else email.setText(snapshot.child("email").getValue().toString());
+                    if(snapshot.child("gender").getValue().toString().equals("N/A")) gender.setText("");
+                    else gender.setText(snapshot.child("gender").getValue().toString());
+                    if(snapshot.child("aadhar").getValue().toString().equals("N/A")) aadhar.setText("");
+                    else aadhar.setText(snapshot.child("aadhar").getValue().toString());
+                    if(snapshot.child("nationality").getValue().toString().equals("N/A")) nationality.setText("");
+                    else nationality.setText(snapshot.child("nationality").getValue().toString());
+                    if(snapshot.child("state").getValue().toString().equals("N/A")) state.setText("");
+                    else state.setText(snapshot.child("state").getValue().toString());
+                    if(snapshot.child("district").getValue().toString().equals("N/A")) district.setText("");
+                    else district.setText(snapshot.child("district").getValue().toString());
+                    if(snapshot.child("village").getValue().toString().equals("N/A")) village.setText("");
+                    else village.setText(snapshot.child("village").getValue().toString());
+                    if(snapshot.child("tenth").getValue().toString().equals("N/A")) tenth.setText("");
+                    else tenth.setText(snapshot.child("tenth").getValue().toString());
+                    if(snapshot.child("twelve").getValue().toString().equals("N/A")) twelve.setText("");
+                    else twelve.setText(snapshot.child("twelve").getValue().toString());
+                }
+
             }
 
             @Override
