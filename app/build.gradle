@@ -77,6 +77,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:21.0.1'
     implementation 'com.google.firebase:firebase-analytics'
     implementation platform('com.google.firebase:firebase-bom:26.1.1')
+
+    implementation 'br.com.simplepass:loading-button-android:2.2.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

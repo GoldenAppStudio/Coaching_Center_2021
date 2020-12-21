@@ -42,12 +42,7 @@ public class MainActivity extends AppCompatActivity implements FragmentChangeLis
                     .setTitle("Network Error!")
                     .setMessage("Connect To Internet First...")
                     .setPositiveButton(android.R.string.yes,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    quit();
-                                }
-                            }).create().show();
+                            (dialog, which) -> quit()).create().show();
 
             /*finish(); //Calling this method to close this activity when internet is not available.
             Toast.makeText(this,"Connect to internet first", Toast.LENGTH_LONG).show();

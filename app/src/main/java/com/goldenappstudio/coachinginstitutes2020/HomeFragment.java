@@ -60,7 +60,6 @@ public class HomeFragment extends Fragment {
 
     }
 
-
     ViewFlipper viewFlipper;
     CardView mCardViewShare;
 
@@ -71,7 +70,7 @@ public class HomeFragment extends Fragment {
 
         // Inflate the layout for this fragment
 
-        View rootView =  inflater.inflate(R.layout.fragment_home, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
 
         return inflater.inflate(R.layout.fragment_home, container, false);
@@ -82,13 +81,11 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewFlipper = getView().findViewById(R.id.view_flipper);
-        viewFlipper.setInAnimation(this.getContext(),android.R.anim.slide_in_left);
-        viewFlipper.setOutAnimation(this.getContext(),android.R.anim.slide_out_right);
+        viewFlipper.setInAnimation(this.getContext(), android.R.anim.slide_in_left);
+        viewFlipper.setOutAnimation(this.getContext(), android.R.anim.slide_out_right);
         viewFlipper.setAutoStart(true);
         viewFlipper.setFlipInterval(3000);
         viewFlipper.startFlipping();
-
-
 
         DatabaseReference databaseReference;
         List<TrendingVideo> list = new ArrayList<>();
@@ -101,20 +98,17 @@ public class HomeFragment extends Fragment {
         TextView textView = getView().findViewById(R.id.RAND_1);
         mCardViewShare = getView().findViewById(R.id.cardViewShare);
 
-        mCardViewShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    Intent shareIntent = new Intent();
-                    shareIntent.setAction(Intent.ACTION_SEND);
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, "Download Coaching Institute application for preparation of govt jobs and learning. Download Link\n"+"https://play.google.com/store/apps/details?id=com.goldenappstudio.coachinginstitutes2020");
-                    shareIntent.setType("text/plane");
-                    startActivity(Intent.createChooser(shareIntent, "Share Coaching App via"));
-                } catch (Exception e) {
-                    //e.toString();
-                }
-
+        mCardViewShare.setOnClickListener(view1 -> {
+            try {
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, "Download Coaching Institute application for preparation of govt jobs and learning. Download Link\n" + "https://play.google.com/store/apps/details?id=com.goldenappstudio.coachinginstitutes2020");
+                shareIntent.setType("text/plane");
+                startActivity(Intent.createChooser(shareIntent, "Share Coaching App via"));
+            } catch (Exception e) {
+                //e.toString();
             }
+
         });
 
         recyclerView = getView().findViewById(R.id.trending_video_thumb_recycle);
@@ -133,16 +127,9 @@ public class HomeFragment extends Fragment {
         });
 
         free_study_material.setOnClickListener(v -> {
-            Dialog myDialog = new Dialog(this.getContext());
-            myDialog.setContentView(R.layout.show_popup);
-            TextView title = myDialog.findViewById(R.id.notification_title_popup);
-            TextView content = myDialog.findViewById(R.id.notification_content_popup);
-
-            title.setText("Free Study Material");
-            content.setText("No free study material found at this moment. Please try later. (You can search for free video courses in store)");
-
-            myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            myDialog.show();
+            FragmentChangeListener fc = (FragmentChangeListener) getActivity();
+            assert fc != null;
+            fc.replaceFragment(new Store());
         });
 
         databaseReference = FirebaseDatabase.getInstance().getReference("store/videos/");
@@ -196,9 +183,43 @@ class TrendingVideoRecycle extends RecyclerView.Adapter<TrendingVideoRecycle.Vie
 
         final TrendingVideo trendingVideo = MainImageUploadInfoList.get(position);
         holder.title.setText(trendingVideo.getVideo_title());
-        if (trendingVideo.getVideo_price().isEmpty() || trendingVideo.getVideo_price().equals("0")) {
-            holder.price.setText("Free");
-        } else holder.price.setText(trendingVideo.getVideo_price());
+        // Check if video is already purchased ...
+        DatabaseReference db = FirebaseDatabase.getInstance()
+                .getReference("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        db.child("purchased_courses").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    if (trendingVideo.getVideo_price().isEmpty() || trendingVideo.getVideo_price().equals("0")) {
+                        holder.price.setText("Free");
+                    } else {
+                        holder.price.setText(String.format("Rs %s", trendingVideo.getVideo_price()));
+                    }
+                } else {
+                    int a = 0;
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        if (ds.child("video_id").getValue().toString().equals(trendingVideo.getVideo_id())) {
+                            holder.price.setText("PURCHASED");
+                            a = 1;
+                        }
+                    }
+                    if (a == 0) {
+                        if (trendingVideo.getVideo_price().isEmpty() || trendingVideo.getVideo_price().equals("0")) {
+                            holder.price.setText("Free");
+                        } else {
+                            holder.price.setText(String.format("Rs %s", trendingVideo.getVideo_price()));
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         holder.upload_time.setText(trendingVideo.getVideo_upload_time());
         holder.duration.setText(trendingVideo.getVideo_duration());
         holder.author.setText(String.format("By %s", trendingVideo.getVideo_teacher()));
@@ -217,51 +238,47 @@ class TrendingVideoRecycle extends RecyclerView.Adapter<TrendingVideoRecycle.Vie
                 intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             } else {
-                if (video_already_purchased(trendingVideo.getVideo_id())) {
-                    Intent intent = new Intent(v.getContext(), VideoPlayer.class);
-                    intent.putExtra("video_title", trendingVideo.getVideo_title());
-                    intent.putExtra("video_id", trendingVideo.getVideo_id());
-                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
-                } else {
-                    Intent intent = new Intent(v.getContext(), GooglePayTestActivity.class);
-                    intent.putExtra("video_title", trendingVideo.getVideo_title());
-                    intent.putExtra("video_price", trendingVideo.getVideo_price());
-                    intent.putExtra("video_id", trendingVideo.getVideo_id());
-                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
-                }
-            }
-
-        });
-    }
-
-    public boolean video_already_purchased(String video_id) {
-        final int[] rand = new int[1];
-        DatabaseReference db = FirebaseDatabase.getInstance()
-                .getReference("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        db.child("purchased_videos").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(!snapshot.exists()) {
-                    rand[0] = 0;
-                } else {
-                    for(DataSnapshot ds : snapshot.getChildren()) {
-                        if(ds.child("video_id").getValue().toString().equals(video_id)) {
-                            rand[0] = 1;
-                        } else rand[0] = 0;
+                db.child("purchased_courses").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (!snapshot.exists()) {
+                            Intent intent = new Intent(v.getContext(), GooglePayTestActivity.class);
+                            intent.putExtra("video_title", trendingVideo.getVideo_title());
+                            intent.putExtra("video_price", trendingVideo.getVideo_price());
+                            intent.putExtra("video_id", trendingVideo.getVideo_id());
+                            intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                        } else {
+                            int a = 0;
+                            for (DataSnapshot ds : snapshot.getChildren()) {
+                                if (ds.child("video_id").getValue().toString().equals(trendingVideo.getVideo_id())) {
+                                    a = 1;
+                                    Intent intent = new Intent(v.getContext(), VideoPlayer.class);
+                                    intent.putExtra("video_title", trendingVideo.getVideo_title());
+                                    intent.putExtra("video_id", trendingVideo.getVideo_id());
+                                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(intent);
+                                }
+                            }
+                            if (a == 0) {
+                                Intent intent = new Intent(v.getContext(), GooglePayTestActivity.class);
+                                intent.putExtra("video_title", trendingVideo.getVideo_title());
+                                intent.putExtra("video_price", trendingVideo.getVideo_price());
+                                intent.putExtra("video_id", trendingVideo.getVideo_id());
+                                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(intent);
+                            }
+                        }
                     }
-                }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
         });
-
-        return rand[0] != 0;
     }
 
     @Override

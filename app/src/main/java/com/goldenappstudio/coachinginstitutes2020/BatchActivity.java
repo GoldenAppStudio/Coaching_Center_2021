@@ -1,21 +1,18 @@
 package com.goldenappstudio.coachinginstitutes2020;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.app.Dialog;
 import android.app.DownloadManager;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +26,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,31 +42,20 @@ import java.util.List;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
-public class Store extends Fragment {
-    public Store() {}
+public class BatchActivity extends AppCompatActivity {
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
+        setContentView(R.layout.activity_batch);
+        getSupportActionBar().setTitle("" + getIntent().getStringExtra("batch_name") + " (#ID: " + getIntent().getStringExtra("batch_id") + ")");
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_store, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        Button video_button = view.findViewById(R.id.store_video_button);
-        Button pdf_button = view.findViewById(R.id.store_pdf_button);
-        Button fsm_button = view.findViewById(R.id.store_fsm_button);
-        LinearLayout video_layout = view.findViewById(R.id.store_video_layout);
-        LinearLayout pdf_layout = view.findViewById(R.id.store_pdf_layout);
-        LinearLayout fsm_layout = view.findViewById(R.id.store_fsm_layout);
+        Button video_button = findViewById(R.id.store_video_button);
+        Button pdf_button = findViewById(R.id.store_pdf_button);
+        Button fsm_button = findViewById(R.id.store_fsm_button);
+        LinearLayout video_layout = findViewById(R.id.store_video_layout);
+        LinearLayout pdf_layout = findViewById(R.id.store_pdf_layout);
+        LinearLayout fsm_layout = findViewById(R.id.store_fsm_layout);
 
         video_button.setOnClickListener(view1 -> {
             video_button.setBackgroundColor(Color.parseColor("#7579e7"));
@@ -113,41 +98,41 @@ public class Store extends Fragment {
         });
 
         DatabaseReference databaseReference;
-        List<InterestingVideo> list = new ArrayList<>();
+        List<_InterestingVideo> list = new ArrayList<>();
         RecyclerView recyclerView;
-        final InterestVideoRecycle[] adapter = new InterestVideoRecycle[1];
+        final _InterestVideoRecycle[] adapter = new _InterestVideoRecycle[1];
 
         DatabaseReference reference;
-        List<MoreVideo> list1 = new ArrayList<>();
+        List<_MoreVideo> list1 = new ArrayList<>();
         RecyclerView recyclerView1;
-        final MoreVideoRecycler[] adapter1 = new MoreVideoRecycler[1];
+        final _MoreVideoRecycler[] adapter1 = new _MoreVideoRecycler[1];
 
         DatabaseReference pdf_reference;
-        List<Pdfs> pdf_list = new ArrayList<>();
+        List<_Pdfs> pdf_list = new ArrayList<>();
         RecyclerView pdf_recyclerview;
-        final PdfRecycler[] pdf_adapter = new PdfRecycler[1];
+        final _PdfRecycler[] pdf_adapter = new _PdfRecycler[1];
 
         DatabaseReference fsm_reference;
-        List<Fsm> fsm_list = new ArrayList<>();
+        List<_Fsm> fsm_list = new ArrayList<>();
         RecyclerView fsm_recyclerview;
-        final FsmRecycler[] fsm_adapter = new FsmRecycler[1];
+        final _FsmRecycler[] fsm_adapter = new _FsmRecycler[1];
 
-        recyclerView = getView().findViewById(R.id.interest_video_thumb_recycle);
+        recyclerView = findViewById(R.id.interest_video_thumb_recycle);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.HORIZONTAL));
 
-        recyclerView1 = getView().findViewById(R.id.more_video_thumb_recycle);
+        recyclerView1 = findViewById(R.id.more_video_thumb_recycle);
         recyclerView1.setHasFixedSize(true);
-        recyclerView1.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        recyclerView1.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-        pdf_recyclerview = getView().findViewById(R.id.store_pdf_recyclerview);
+        pdf_recyclerview = findViewById(R.id.store_pdf_recyclerview);
         pdf_recyclerview.setHasFixedSize(true);
-        pdf_recyclerview.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        pdf_recyclerview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-        fsm_recyclerview = getView().findViewById(R.id.store_fsm_recyclerview);
+        fsm_recyclerview = findViewById(R.id.store_fsm_recyclerview);
         fsm_recyclerview.setHasFixedSize(true);
-        fsm_recyclerview.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        fsm_recyclerview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         SkeletonScreen skeletonScreen = Skeleton.bind(recyclerView)
                 .adapter(adapter[0])
@@ -169,20 +154,20 @@ public class Store extends Fragment {
                 .load(R.layout.store_fsm_recycler)
                 .show();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("store/videos/");
-        reference = FirebaseDatabase.getInstance().getReference("store/videos/");
-        pdf_reference = FirebaseDatabase.getInstance().getReference("store/pdfs/");
-        fsm_reference = FirebaseDatabase.getInstance().getReference("store/fsm/");
+        databaseReference = FirebaseDatabase.getInstance().getReference("batches/" + getIntent().getStringExtra("batch_id") + "store/videos/");
+        reference = FirebaseDatabase.getInstance().getReference("batches/" + getIntent().getStringExtra("batch_id") + "/store/videos/");
+        pdf_reference = FirebaseDatabase.getInstance().getReference("batches/" + getIntent().getStringExtra("batch_id") + "store/pdfs/");
+        fsm_reference = FirebaseDatabase.getInstance().getReference("batches/" + getIntent().getStringExtra("batch_id") + "store/fsm/");
 
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    InterestingVideo interestingVideo = dataSnapshot.getValue(InterestingVideo.class);
+                    _InterestingVideo interestingVideo = dataSnapshot.getValue(_InterestingVideo.class);
                     list.add(interestingVideo);
                 }
 
-                adapter[0] = new InterestVideoRecycle(getActivity(), list);
+                adapter[0] = new _InterestVideoRecycle(BatchActivity.this, list);
                 recyclerView.setAdapter(adapter[0]);
             }
 
@@ -195,12 +180,12 @@ public class Store extends Fragment {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    MoreVideo moreVideo = dataSnapshot.getValue(MoreVideo.class);
+                    _MoreVideo moreVideo = dataSnapshot.getValue(_MoreVideo.class);
                     list1.add(moreVideo);
                 }
 
                 Collections.reverse(list1);
-                adapter1[0] = new MoreVideoRecycler(getActivity(), list1);
+                adapter1[0] = new _MoreVideoRecycler(BatchActivity.this, list1);
                 recyclerView1.setAdapter(adapter1[0]);
             }
 
@@ -213,12 +198,12 @@ public class Store extends Fragment {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    Pdfs pdfs = dataSnapshot.getValue(Pdfs.class);
+                    _Pdfs pdfs = dataSnapshot.getValue(_Pdfs.class);
                     pdf_list.add(pdfs);
                 }
 
                 Collections.reverse(pdf_list);
-                pdf_adapter[0] = new PdfRecycler(getActivity(), pdf_list);
+                pdf_adapter[0] = new _PdfRecycler(BatchActivity.this, pdf_list);
                 pdf_recyclerview.setAdapter(pdf_adapter[0]);
             }
 
@@ -231,30 +216,30 @@ public class Store extends Fragment {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    Fsm fsm = dataSnapshot.getValue(Fsm.class);
+                    _Fsm fsm = dataSnapshot.getValue(_Fsm.class);
                     fsm_list.add(fsm);
                 }
 
                 Collections.reverse(fsm_list);
-                fsm_adapter[0] = new FsmRecycler(getActivity(), fsm_list);
+                fsm_adapter[0] = new _FsmRecycler(BatchActivity.this, fsm_list);
                 fsm_recyclerview.setAdapter(fsm_adapter[0]);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
-
     }
 }
 
-class InterestVideoRecycle extends RecyclerView.Adapter<InterestVideoRecycle.ViewHolder> {
+class _InterestVideoRecycle extends RecyclerView.Adapter<_InterestVideoRecycle.ViewHolder> {
 
     View view;
     Context context;
-    List<InterestingVideo> MainImageUploadInfoList;
+    List<_InterestingVideo> MainImageUploadInfoList;
     public static String SUB_SERVICE_UID;
 
-    public InterestVideoRecycle(Context context, List<InterestingVideo> TempList) {
+    public _InterestVideoRecycle(Context context, List<_InterestingVideo> TempList) {
         this.MainImageUploadInfoList = TempList;
         this.context = context;
     }
@@ -268,7 +253,7 @@ class InterestVideoRecycle extends RecyclerView.Adapter<InterestVideoRecycle.Vie
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        final InterestingVideo interestingVideo = MainImageUploadInfoList.get(position);
+        final _InterestingVideo interestingVideo = MainImageUploadInfoList.get(position);
         holder.title.setText(interestingVideo.getVideo_title());
         holder.price.setText(interestingVideo.getVideo_price());
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -315,16 +300,16 @@ class InterestVideoRecycle extends RecyclerView.Adapter<InterestVideoRecycle.Vie
     }
 }
 
-class InterestingVideo {
+class _InterestingVideo {
     private String video_title, video_description, video_price, video_teacher, video_duration;
     private String video_id, video_upload_time;
 
-    public InterestingVideo() {
+    public _InterestingVideo() {
         //empty constructor needed
     }
 
-    public InterestingVideo(String video_title, String video_description, String video_upload_time,
-                            String video_teacher, String video_price, String video_id, String video_duration) {
+    public _InterestingVideo(String video_title, String video_description, String video_upload_time,
+                             String video_teacher, String video_price, String video_id, String video_duration) {
         this.video_title = video_title;
         this.video_teacher = video_teacher;
         this.video_price = video_price;
@@ -363,14 +348,14 @@ class InterestingVideo {
     }
 }
 
-class MoreVideoRecycler extends RecyclerView.Adapter<MoreVideoRecycler.ViewHolder> {
+class _MoreVideoRecycler extends RecyclerView.Adapter<_MoreVideoRecycler.ViewHolder> {
 
     View view;
     Context context;
-    List<MoreVideo> MainImageUploadInfoList;
+    List<_MoreVideo> MainImageUploadInfoList;
     public static String SUB_SERVICE_UID;
 
-    public MoreVideoRecycler(Context context, List<MoreVideo> TempList) {
+    public _MoreVideoRecycler(Context context, List<_MoreVideo> TempList) {
         this.MainImageUploadInfoList = TempList;
         this.context = context;
     }
@@ -385,7 +370,7 @@ class MoreVideoRecycler extends RecyclerView.Adapter<MoreVideoRecycler.ViewHolde
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        final MoreVideo moreVideo = MainImageUploadInfoList.get(position);
+        final _MoreVideo moreVideo = MainImageUploadInfoList.get(position);
         holder.title.setText(moreVideo.getVideo_title());
         holder.price.setText(moreVideo.getVideo_price());
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -432,16 +417,16 @@ class MoreVideoRecycler extends RecyclerView.Adapter<MoreVideoRecycler.ViewHolde
     }
 }
 
-class MoreVideo {
+class _MoreVideo {
     private String video_title, video_description, video_price, video_teacher, video_duration;
     private String video_id, video_upload_time;
 
-    public MoreVideo() {
+    public _MoreVideo() {
         //empty constructor needed
     }
 
-    public MoreVideo(String video_title, String video_description, String video_upload_time,
-                     String video_teacher, String video_price, String video_id, String video_duration) {
+    public _MoreVideo(String video_title, String video_description, String video_upload_time,
+                      String video_teacher, String video_price, String video_id, String video_duration) {
         this.video_title = video_title;
         this.video_teacher = video_teacher;
         this.video_price = video_price;
@@ -480,13 +465,13 @@ class MoreVideo {
     }
 }
 
-class PdfRecycler extends RecyclerView.Adapter<PdfRecycler.ViewHolder> {
+class _PdfRecycler extends RecyclerView.Adapter<_PdfRecycler.ViewHolder> {
 
     View view;
     Context context;
-    List<Pdfs> MainImageUploadInfoList;
+    List<_Pdfs> MainImageUploadInfoList;
 
-    public PdfRecycler(Context context, List<Pdfs> TempList) {
+    public _PdfRecycler(Context context, List<_Pdfs> TempList) {
         this.MainImageUploadInfoList = TempList;
         this.context = context;
     }
@@ -500,7 +485,7 @@ class PdfRecycler extends RecyclerView.Adapter<PdfRecycler.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        final Pdfs pdfs = MainImageUploadInfoList.get(position);
+        final _Pdfs pdfs = MainImageUploadInfoList.get(position);
         holder.title.setText(pdfs.getPdf_title());
         holder.details.setText(String.format("by %s (%s)", pdfs.getPdf_teacher(), pdfs.getPdf_upload_time()));
 
@@ -560,16 +545,16 @@ class PdfRecycler extends RecyclerView.Adapter<PdfRecycler.ViewHolder> {
     }
 }
 
-class Pdfs {
+class _Pdfs {
     private String pdf_title, pdf_description, pdf_teacher;
     private String pdf_id, pdf_upload_time;
 
-    public Pdfs() {
+    public _Pdfs() {
         //empty constructor needed
     }
 
-    public Pdfs(String pdf_title, String pdf_description, String pdf_teacher,
-                String pdf_id, String pdf_upload_time) {
+    public _Pdfs(String pdf_title, String pdf_description, String pdf_teacher,
+                 String pdf_id, String pdf_upload_time) {
         this.pdf_title = pdf_title;
         this.pdf_description = pdf_description;
         this.pdf_teacher = pdf_teacher;
@@ -598,13 +583,13 @@ class Pdfs {
     }
 }
 
-class FsmRecycler extends RecyclerView.Adapter<FsmRecycler.ViewHolder> {
+class _FsmRecycler extends RecyclerView.Adapter<_FsmRecycler.ViewHolder> {
 
     View view;
     Context context;
-    List<Fsm> MainImageUploadInfoList;
+    List<_Fsm> MainImageUploadInfoList;
 
-    public FsmRecycler(Context context, List<Fsm> TempList) {
+    public _FsmRecycler(Context context, List<_Fsm> TempList) {
         this.MainImageUploadInfoList = TempList;
         this.context = context;
     }
@@ -618,7 +603,7 @@ class FsmRecycler extends RecyclerView.Adapter<FsmRecycler.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        final Fsm fsm = MainImageUploadInfoList.get(position);
+        final _Fsm fsm = MainImageUploadInfoList.get(position);
         holder.title.setText(fsm.getFsm_title());
         holder.details.setText(String.format("by %s (%s)", fsm.getFsm_teacher(), fsm.getFsm_upload_time()));
 
@@ -644,6 +629,7 @@ class FsmRecycler extends RecyclerView.Adapter<FsmRecycler.ViewHolder> {
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView title, details;
+
         public ViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.fsm_title);
@@ -652,15 +638,15 @@ class FsmRecycler extends RecyclerView.Adapter<FsmRecycler.ViewHolder> {
     }
 }
 
-class Fsm {
+class _Fsm {
     private String fsm_title, fsm_content, fsm_teacher;
     private String fsm_id, fsm_upload_time;
 
-    public Fsm() {
+    public _Fsm() {
         //empty constructor needed
     }
 
-    public Fsm(String fsm_title, String fsm_content, String fsm_teacher,
+    public _Fsm(String fsm_title, String fsm_content, String fsm_teacher,
                 String fsm_id, String fsm_upload_time) {
         this.fsm_title = fsm_title;
         this.fsm_content = fsm_content;
