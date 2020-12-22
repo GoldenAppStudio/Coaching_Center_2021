@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
 import android.os.Bundle;
@@ -108,7 +109,6 @@ public class HomeFragment extends Fragment {
             } catch (Exception e) {
                 //e.toString();
             }
-
         });
 
         recyclerView = getView().findViewById(R.id.trending_video_thumb_recycle);
@@ -193,6 +193,8 @@ class TrendingVideoRecycle extends RecyclerView.Adapter<TrendingVideoRecycle.Vie
                 if (!snapshot.exists()) {
                     if (trendingVideo.getVideo_price().isEmpty() || trendingVideo.getVideo_price().equals("0")) {
                         holder.price.setText("Free");
+                        holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                        holder.price_.setText(String.format("Rs %s", trendingVideo.getStrike_price()));
                     } else {
                         holder.price.setText(String.format("Rs %s", trendingVideo.getVideo_price()));
                     }
@@ -207,7 +209,11 @@ class TrendingVideoRecycle extends RecyclerView.Adapter<TrendingVideoRecycle.Vie
                     if (a == 0) {
                         if (trendingVideo.getVideo_price().isEmpty() || trendingVideo.getVideo_price().equals("0")) {
                             holder.price.setText("Free");
+                            holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                            holder.price_.setText(String.format("Rs %s", trendingVideo.getStrike_price()));
                         } else {
+                            holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                            holder.price_.setText(String.format("Rs %s", trendingVideo.getStrike_price()));
                             holder.price.setText(String.format("Rs %s", trendingVideo.getVideo_price()));
                         }
                     }
@@ -288,7 +294,7 @@ class TrendingVideoRecycle extends RecyclerView.Adapter<TrendingVideoRecycle.Vie
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title, price, duration, upload_time, author;
+        TextView title, price, price_, duration, upload_time, author;
         ImageView image;
 
         public ViewHolder(View itemView) {
@@ -299,20 +305,22 @@ class TrendingVideoRecycle extends RecyclerView.Adapter<TrendingVideoRecycle.Vie
             author = itemView.findViewById(R.id.trending_video_author);
             duration = itemView.findViewById(R.id.duration_of_trending_video);
             upload_time = itemView.findViewById(R.id.trending_video_upload_time);
+            price_ = itemView.findViewById(R.id.trending_video_price_);
         }
     }
 }
 
 class TrendingVideo {
     private String video_title, video_description, video_price, video_teacher, video_duration;
-    private String video_id, video_upload_time;
+    private String video_id, video_upload_time, strike_price;
 
     public TrendingVideo() {
         //empty constructor needed
     }
 
     public TrendingVideo(String video_title, String video_description, String video_upload_time,
-                         String video_teacher, String video_price, String video_id, String video_duration) {
+                         String video_teacher, String video_price,
+                         String video_id, String video_duration, String strike_price) {
         this.video_title = video_title;
         this.video_teacher = video_teacher;
         this.video_price = video_price;
@@ -320,10 +328,15 @@ class TrendingVideo {
         this.video_description = video_description;
         this.video_upload_time = video_upload_time;
         this.video_duration = video_duration;
+        this.strike_price = strike_price;
     }
 
     public String getVideo_title() {
         return video_title;
+    }
+
+    public String getStrike_price() {
+        return strike_price;
     }
 
     public String getVideo_description() {

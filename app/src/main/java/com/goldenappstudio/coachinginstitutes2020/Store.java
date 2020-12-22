@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import com.bumptech.glide.Glide;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,7 +49,8 @@ import java.util.List;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class Store extends Fragment {
-    public Store() {}
+    public Store() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -241,7 +244,8 @@ public class Store extends Fragment {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
 
     }
@@ -270,7 +274,52 @@ class InterestVideoRecycle extends RecyclerView.Adapter<InterestVideoRecycle.Vie
 
         final InterestingVideo interestingVideo = MainImageUploadInfoList.get(position);
         holder.title.setText(interestingVideo.getVideo_title());
-        holder.price.setText(interestingVideo.getVideo_price());
+        Toast.makeText(context, "" + interestingVideo.getVideo_teacher(), Toast.LENGTH_SHORT).show();
+        holder.teacher.setText(interestingVideo.getVideo_teacher());
+        holder.upload_time.setText(interestingVideo.getVideo_upload_time());
+
+        DatabaseReference db = FirebaseDatabase.getInstance()
+                .getReference("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        db.child("purchased_courses").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    if (interestingVideo.getVideo_price().isEmpty() || interestingVideo.getVideo_price().equals("0")) {
+                        holder.price.setText("Free");
+                        holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                        holder.price_.setText(interestingVideo.getStrike_price());
+                    } else {
+                        holder.price.setText(String.format("Rs %s", interestingVideo.getVideo_price()));
+                    }
+                } else {
+                    int a = 0;
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        if (ds.child("video_id").getValue().toString().equals(interestingVideo.getVideo_id())) {
+                            holder.price.setText("PURCHASED");
+                            a = 1;
+                        }
+                    }
+                    if (a == 0) {
+                        if (interestingVideo.getVideo_price().isEmpty() || interestingVideo.getVideo_price().equals("0")) {
+                            holder.price.setText("Free");
+                            holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                            holder.price_.setText(interestingVideo.getStrike_price());
+                        } else {
+                            holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                            holder.price_.setText(interestingVideo.getStrike_price());
+                            holder.price.setText(String.format("Rs %s", interestingVideo.getVideo_price()));
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference gsReference = storage.getReferenceFromUrl("gs://coaching-institute-project.appspot.com/store/videos/" + interestingVideo.getVideo_id() + ".mp4");
 
@@ -285,13 +334,42 @@ class InterestVideoRecycle extends RecyclerView.Adapter<InterestVideoRecycle.Vie
                 Toast.makeText(context, "Free", Toast.LENGTH_SHORT).show();
                 context.startActivity(intent);
             } else {
-                Intent intent = new Intent(v.getContext(), GooglePayTestActivity.class);
-                intent.putExtra("product_name", interestingVideo.getVideo_title());
-                intent.putExtra("product_price", interestingVideo.getVideo_price());
-                intent.putExtra("product_uid", interestingVideo.getVideo_id());
-                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                Toast.makeText(context, "Paid", Toast.LENGTH_SHORT).show();
-                context.startActivity(intent);
+                db.child("purchased_courses").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (!snapshot.exists()) {
+                            Intent intent = new Intent(v.getContext(), GooglePayTestActivity.class);
+                            intent.putExtra("video_title", interestingVideo.getVideo_title());
+                            intent.putExtra("video_price", interestingVideo.getVideo_price());
+                            intent.putExtra("video_id", interestingVideo.getVideo_id());
+                            intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                        } else {
+                            int a = 0;
+                            for (DataSnapshot ds : snapshot.getChildren()) {
+                                if (ds.child("video_id").getValue().toString().equals(interestingVideo.getVideo_id())) {
+                                    a = 1;
+                                    Intent intent = new Intent(v.getContext(), VideoPlayer.class);
+                                    intent.putExtra("video_title", interestingVideo.getVideo_title());
+                                    intent.putExtra("video_id", interestingVideo.getVideo_id());
+                                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(intent);
+                                }
+                            }
+                            if (a == 0) {
+                                Intent intent = new Intent(v.getContext(), GooglePayTestActivity.class);
+                                intent.putExtra("video_title", interestingVideo.getVideo_title());
+                                intent.putExtra("video_price", interestingVideo.getVideo_price());
+                                intent.putExtra("video_id", interestingVideo.getVideo_id());
+                                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(intent);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
             }
         });
     }
@@ -303,7 +381,7 @@ class InterestVideoRecycle extends RecyclerView.Adapter<InterestVideoRecycle.Vie
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title, price;
+        TextView title, price, price_, teacher, upload_time;
         ImageView image;
 
         public ViewHolder(View itemView) {
@@ -311,20 +389,24 @@ class InterestVideoRecycle extends RecyclerView.Adapter<InterestVideoRecycle.Vie
             title = itemView.findViewById(R.id.interst_video_title);
             price = itemView.findViewById(R.id.interest_video_price);
             image = itemView.findViewById(R.id.interest_video_thumb_recycle);
+            teacher = itemView.findViewById(R.id.interest_video_teacher);
+            upload_time = itemView.findViewById(R.id.interest_video_upload_time);
+            price_ = itemView.findViewById(R.id.interest_video_price_);
         }
     }
 }
 
 class InterestingVideo {
-    private String video_title, video_description, video_price, video_teacher, video_duration;
-    private String video_id, video_upload_time;
+    private String video_title, video_description, video_price, video_teacher;
+    private String video_id, video_upload_time, video_duration, strike_price;
 
     public InterestingVideo() {
         //empty constructor needed
     }
 
     public InterestingVideo(String video_title, String video_description, String video_upload_time,
-                            String video_teacher, String video_price, String video_id, String video_duration) {
+                            String video_teacher, String video_price,
+                            String video_id, String video_duration, String strike_price) {
         this.video_title = video_title;
         this.video_teacher = video_teacher;
         this.video_price = video_price;
@@ -332,6 +414,7 @@ class InterestingVideo {
         this.video_description = video_description;
         this.video_upload_time = video_upload_time;
         this.video_duration = video_duration;
+        this.strike_price = strike_price;
     }
 
     public String getVideo_title() {
@@ -361,6 +444,10 @@ class InterestingVideo {
     public String getVideo_upload_time() {
         return video_upload_time;
     }
+
+    public String getStrike_price() {
+        return strike_price;
+    }
 }
 
 class MoreVideoRecycler extends RecyclerView.Adapter<MoreVideoRecycler.ViewHolder> {
@@ -388,6 +475,9 @@ class MoreVideoRecycler extends RecyclerView.Adapter<MoreVideoRecycler.ViewHolde
         final MoreVideo moreVideo = MainImageUploadInfoList.get(position);
         holder.title.setText(moreVideo.getVideo_title());
         holder.price.setText(moreVideo.getVideo_price());
+        holder.teacher.setText(moreVideo.getVideo_teacher());
+        holder.upload_time.setText(moreVideo.getVideo_upload_time());
+        holder.price_.setText(moreVideo.getStrike_price());
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference gsReference = storage.getReferenceFromUrl("gs://coaching-institute-project.appspot.com/store/videos/" + moreVideo.getVideo_id() + ".mp4");
 
@@ -420,7 +510,7 @@ class MoreVideoRecycler extends RecyclerView.Adapter<MoreVideoRecycler.ViewHolde
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title, price;
+        TextView title, price, price_, teacher, upload_time;
         ImageView image;
 
         public ViewHolder(View itemView) {
@@ -428,20 +518,24 @@ class MoreVideoRecycler extends RecyclerView.Adapter<MoreVideoRecycler.ViewHolde
             title = itemView.findViewById(R.id.more_video_title);
             price = itemView.findViewById(R.id.more_video_price);
             image = itemView.findViewById(R.id.more_video_thumb_recycle);
+            teacher = itemView.findViewById(R.id.more_video_teacher);
+            price_ = itemView.findViewById(R.id.more_video_price_);
+            upload_time = itemView.findViewById(R.id.more_video_upload_time);
         }
     }
 }
 
 class MoreVideo {
     private String video_title, video_description, video_price, video_teacher, video_duration;
-    private String video_id, video_upload_time;
+    private String video_id, video_upload_time, strike_price;
 
     public MoreVideo() {
         //empty constructor needed
     }
 
     public MoreVideo(String video_title, String video_description, String video_upload_time,
-                     String video_teacher, String video_price, String video_id, String video_duration) {
+                     String video_teacher, String video_price,
+                     String video_id, String video_duration, String strike_price) {
         this.video_title = video_title;
         this.video_teacher = video_teacher;
         this.video_price = video_price;
@@ -449,6 +543,7 @@ class MoreVideo {
         this.video_description = video_description;
         this.video_upload_time = video_upload_time;
         this.video_duration = video_duration;
+        this.strike_price = strike_price;
     }
 
     public String getVideo_title() {
@@ -461,6 +556,10 @@ class MoreVideo {
 
     public String getVideo_id() {
         return video_id;
+    }
+
+    public String getStrike_price() {
+        return strike_price;
     }
 
     public String getVideo_duration() {
@@ -644,6 +743,7 @@ class FsmRecycler extends RecyclerView.Adapter<FsmRecycler.ViewHolder> {
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView title, details;
+
         public ViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.fsm_title);
@@ -661,7 +761,7 @@ class Fsm {
     }
 
     public Fsm(String fsm_title, String fsm_content, String fsm_teacher,
-                String fsm_id, String fsm_upload_time) {
+               String fsm_id, String fsm_upload_time) {
         this.fsm_title = fsm_title;
         this.fsm_content = fsm_content;
         this.fsm_teacher = fsm_teacher;

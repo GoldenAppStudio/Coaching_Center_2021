@@ -256,6 +256,8 @@ class _InterestVideoRecycle extends RecyclerView.Adapter<_InterestVideoRecycle.V
         final _InterestingVideo interestingVideo = MainImageUploadInfoList.get(position);
         holder.title.setText(interestingVideo.getVideo_title());
         holder.price.setText(interestingVideo.getVideo_price());
+        holder.teacher.setText(interestingVideo.getVideo_teacher());
+        holder.upload_time.setText(interestingVideo.getVideo_upload_time());
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference gsReference = storage.getReferenceFromUrl("gs://coaching-institute-project.appspot.com/store/videos/" + interestingVideo.getVideo_id() + ".mp4");
 
@@ -288,7 +290,7 @@ class _InterestVideoRecycle extends RecyclerView.Adapter<_InterestVideoRecycle.V
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title, price;
+        TextView title, price, teacher, upload_time;
         ImageView image;
 
         public ViewHolder(View itemView) {
@@ -296,6 +298,8 @@ class _InterestVideoRecycle extends RecyclerView.Adapter<_InterestVideoRecycle.V
             title = itemView.findViewById(R.id.interst_video_title);
             price = itemView.findViewById(R.id.interest_video_price);
             image = itemView.findViewById(R.id.interest_video_thumb_recycle);
+            teacher = itemView.findViewById(R.id.interest_video_teacher);
+            upload_time = itemView.findViewById(R.id.interest_video_upload_time);
         }
     }
 }

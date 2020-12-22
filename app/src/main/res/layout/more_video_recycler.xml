@@ -8,7 +8,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view1"
         android:layout_width="match_parent"
-        android:layout_height="180dp">
+        android:layout_height="185dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,7 +24,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="30dp">
+                android:layout_height="40dp">
 
                 <TextView
                     android:layout_marginStart="3dp"
@@ -32,19 +32,59 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
                     android:textColor="#000"
                     android:textSize="14sp" />
 
                 <TextView
-                    android:layout_marginEnd="3dp"
-                    android:id="@+id/more_video_price"
+                    android:layout_below="@+id/more_video_title"
+                    android:layout_marginStart="3dp"
+                    android:id="@+id/more_video_teacher"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textStyle="italic"
+                    android:layout_alignParentStart="true"
+                    android:text=""
+                    android:textColor="#888"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_toEndOf="@+id/more_video_teacher"
+                    android:layout_marginStart="8dp"
+                    android:layout_below="@id/more_video_title"
+                    android:id="@+id/more_video_upload_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textStyle="italic"
+                    android:textColor="#888"
+                    android:textSize="12sp" />
+
+                <LinearLayout
                     android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:textColor="#3bc"
-                    android:textSize="14sp" />
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_marginEnd="4dp"
+                        android:text=""
+                        android:textStyle="italic"
+                        android:id="@+id/more_video_price_"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#444"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_marginEnd="2dp"
+                        android:id="@+id/more_video_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#3bc"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
             </RelativeLayout>
 
         </LinearLayout>
