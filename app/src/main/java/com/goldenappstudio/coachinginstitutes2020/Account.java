@@ -12,10 +12,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Account extends Fragment {
     public Account() {
@@ -182,7 +186,7 @@ public class Account extends Fragment {
                 }
 
                 Collections.reverse(list);
-                adapter[0] = new _BatchRecycler(getActivity(), list);
+                adapter[0] = new _BatchRecycler(getActivity(), list, getFragmentManager(), Account.this);
                 recyclerView.setAdapter(adapter[0]);
             }
 
@@ -243,10 +247,14 @@ class _BatchRecycler extends RecyclerView.Adapter<_BatchRecycler.ViewHolder> {
     View view;
     Context context;
     List<_BatchClass> MainImageUploadInfoList;
+    FragmentManager fragmentManager;
+    Fragment fragment;
 
-    public _BatchRecycler(Context context, List<_BatchClass> TempList) {
+    public _BatchRecycler(Context context, List<_BatchClass> TempList, FragmentManager fragmentManager, Fragment fragment) {
         this.MainImageUploadInfoList = TempList;
         this.context = context;
+        this.fragmentManager = fragmentManager;
+        this.fragment = fragment;
     }
 
     @Override
@@ -272,7 +280,33 @@ class _BatchRecycler extends RecyclerView.Adapter<_BatchRecycler.ViewHolder> {
         });
 
         holder.remove_batch.setOnClickListener(view1 -> {
+            new AlertDialog.Builder(context)
+                    .setTitle("Are you sure?")
+                    .setMessage("You are about to remove this batch from your profile. Continue?")
+                    .setNegativeButton("No", (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .setPositiveButton("Yes",
+                            (dialog, which) -> {
+                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/batches/");
+                                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        for (DataSnapshot ds : snapshot.getChildren()) {
+                                            if (ds.child("batch_id").getValue().toString().equals(batchClass.getBatch_id())) {
+                                                databaseReference.child(Objects.requireNonNull(ds.getKey())).removeValue();
+                                                fragmentManager.beginTransaction().detach(fragment).attach(fragment).commit();
+                                                Toast.makeText(context, "Batch removed from profile", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
 
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                            }).create().show();
         });
     }
 

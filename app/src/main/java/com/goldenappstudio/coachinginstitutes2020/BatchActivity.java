@@ -10,6 +10,7 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -254,7 +256,66 @@ class _InterestVideoRecycle extends RecyclerView.Adapter<_InterestVideoRecycle.V
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         final _InterestingVideo interestingVideo = MainImageUploadInfoList.get(position);
-        holder.title.setText(interestingVideo.getVideo_title());
+        DatabaseReference db = FirebaseDatabase.getInstance()
+                .getReference("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        db.child("purchased_courses").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    if (interestingVideo.getVideo_price().isEmpty() || interestingVideo.getVideo_price().equals("0")) {
+                        holder.price.setText("Free");
+                        if (interestingVideo.getStrike_price() == null) {
+                            holder.price_.setText("");
+                        } else {
+                            holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                            holder.price_.setText(String.format("₹%s", interestingVideo.getStrike_price()));
+                        }
+                    } else {
+                        holder.price.setText(String.format("₹%s", interestingVideo.getVideo_price()));
+                        if (interestingVideo.getStrike_price() == null) {
+                            holder.price_.setText("");
+                        } else {
+                            holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                            holder.price_.setText(String.format("₹%s", interestingVideo.getStrike_price()));
+                        }
+                    }
+                } else {
+                    int a = 0;
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        if (ds.child("video_id").getValue().toString().equals(interestingVideo.getVideo_id())) {
+                            holder.price.setText("PURCHASED");
+                            a = 1;
+                        }
+                    }
+                    if (a == 0) {
+                        if (interestingVideo.getVideo_price().isEmpty() || interestingVideo.getVideo_price().equals("0")) {
+                            holder.price.setText("Free");
+                            if (interestingVideo.getStrike_price() == null) {
+                                holder.price_.setText("");
+                            } else {
+                                holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                                holder.price_.setText(String.format("₹%s", interestingVideo.getStrike_price()));
+                            }
+                        } else {
+                            holder.price.setText(String.format("₹%s", interestingVideo.getVideo_price()));
+                            if (interestingVideo.getStrike_price() == null) {
+                                holder.price_.setText("");
+                            } else {
+                                holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                                holder.price_.setText(String.format("₹%s", interestingVideo.getStrike_price()));
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         holder.price.setText(interestingVideo.getVideo_price());
         holder.teacher.setText(interestingVideo.getVideo_teacher());
         holder.upload_time.setText(interestingVideo.getVideo_upload_time());
@@ -269,16 +330,47 @@ class _InterestVideoRecycle extends RecyclerView.Adapter<_InterestVideoRecycle.V
             if (interestingVideo.getVideo_price().equals("0") || interestingVideo.getVideo_price().isEmpty()) {
                 Intent intent = new Intent(v.getContext(), VideoPlayer.class);
                 intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                Toast.makeText(context, "Free", Toast.LENGTH_SHORT).show();
+                intent.putExtra("video_title", interestingVideo.getVideo_title());
+                intent.putExtra("video_price", interestingVideo.getVideo_price());
+                intent.putExtra("video_id", interestingVideo.getVideo_id());
                 context.startActivity(intent);
             } else {
-                Intent intent = new Intent(v.getContext(), GooglePayTestActivity.class);
-                intent.putExtra("product_name", interestingVideo.getVideo_title());
-                intent.putExtra("product_price", interestingVideo.getVideo_price());
-                intent.putExtra("product_uid", interestingVideo.getVideo_id());
-                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                Toast.makeText(context, "Paid", Toast.LENGTH_SHORT).show();
-                context.startActivity(intent);
+                db.child("purchased_courses").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (!snapshot.exists()) {
+                            Intent intent = new Intent(v.getContext(), GooglePayTestActivity.class);
+                            intent.putExtra("video_title", interestingVideo.getVideo_title());
+                            intent.putExtra("video_price", interestingVideo.getVideo_price());
+                            intent.putExtra("video_id", interestingVideo.getVideo_id());
+                            intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                        } else {
+                            int a = 0;
+                            for (DataSnapshot ds : snapshot.getChildren()) {
+                                if (ds.child("video_id").getValue().toString().equals(interestingVideo.getVideo_id())) {
+                                    a = 1;
+                                    Intent intent = new Intent(v.getContext(), VideoPlayer.class);
+                                    intent.putExtra("video_title", interestingVideo.getVideo_title());
+                                    intent.putExtra("video_id", interestingVideo.getVideo_id());
+                                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(intent);
+                                }
+                            }
+                            if (a == 0) {
+                                Intent intent = new Intent(v.getContext(), GooglePayTestActivity.class);
+                                intent.putExtra("video_title", interestingVideo.getVideo_title());
+                                intent.putExtra("video_price", interestingVideo.getVideo_price());
+                                intent.putExtra("video_id", interestingVideo.getVideo_id());
+                                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(intent);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
             }
         });
     }
@@ -290,7 +382,7 @@ class _InterestVideoRecycle extends RecyclerView.Adapter<_InterestVideoRecycle.V
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title, price, teacher, upload_time;
+        TextView title, price, price_, teacher, upload_time;
         ImageView image;
 
         public ViewHolder(View itemView) {
@@ -300,20 +392,22 @@ class _InterestVideoRecycle extends RecyclerView.Adapter<_InterestVideoRecycle.V
             image = itemView.findViewById(R.id.interest_video_thumb_recycle);
             teacher = itemView.findViewById(R.id.interest_video_teacher);
             upload_time = itemView.findViewById(R.id.interest_video_upload_time);
+            price_ = itemView.findViewById(R.id.interest_video_price_);
         }
     }
 }
 
 class _InterestingVideo {
     private String video_title, video_description, video_price, video_teacher, video_duration;
-    private String video_id, video_upload_time;
+    private String video_id, video_upload_time, strike_price;
+    ;
 
     public _InterestingVideo() {
         //empty constructor needed
     }
 
     public _InterestingVideo(String video_title, String video_description, String video_upload_time,
-                             String video_teacher, String video_price, String video_id, String video_duration) {
+                             String video_teacher, String video_price, String video_id, String video_duration, String strike_price) {
         this.video_title = video_title;
         this.video_teacher = video_teacher;
         this.video_price = video_price;
@@ -321,6 +415,7 @@ class _InterestingVideo {
         this.video_description = video_description;
         this.video_upload_time = video_upload_time;
         this.video_duration = video_duration;
+        this.strike_price = strike_price;
     }
 
     public String getVideo_title() {
@@ -350,6 +445,10 @@ class _InterestingVideo {
     public String getVideo_upload_time() {
         return video_upload_time;
     }
+
+    public String getStrike_price() {
+        return strike_price;
+    }
 }
 
 class _MoreVideoRecycler extends RecyclerView.Adapter<_MoreVideoRecycler.ViewHolder> {
@@ -375,8 +474,66 @@ class _MoreVideoRecycler extends RecyclerView.Adapter<_MoreVideoRecycler.ViewHol
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         final _MoreVideo moreVideo = MainImageUploadInfoList.get(position);
-        holder.title.setText(moreVideo.getVideo_title());
-        holder.price.setText(moreVideo.getVideo_price());
+        DatabaseReference db = FirebaseDatabase.getInstance()
+                .getReference("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        db.child("purchased_courses").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    if (moreVideo.getVideo_price().isEmpty() || moreVideo.getVideo_price().equals("0")) {
+                        holder.price.setText("Free");
+                        if (moreVideo.getStrike_price() == null) {
+                            holder.price_.setText("");
+                        } else {
+                            holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                            holder.price_.setText(String.format("₹%s", moreVideo.getStrike_price()));
+                        }
+                    } else {
+                        holder.price.setText(String.format("₹%s", moreVideo.getVideo_price()));
+                        if (moreVideo.getStrike_price() == null) {
+                            holder.price_.setText("");
+                        } else {
+                            holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                            holder.price_.setText(String.format("₹%s", moreVideo.getStrike_price()));
+                        }
+                    }
+                } else {
+                    int a = 0;
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        if (ds.child("video_id").getValue().toString().equals(moreVideo.getVideo_id())) {
+                            holder.price.setText("PURCHASED");
+                            a = 1;
+                        }
+                    }
+                    if (a == 0) {
+                        if (moreVideo.getVideo_price().isEmpty() || moreVideo.getVideo_price().equals("0")) {
+                            holder.price.setText("Free");
+                            if (moreVideo.getStrike_price() == null) {
+                                holder.price_.setText("");
+                            } else {
+                                holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                                holder.price_.setText(String.format("₹%s", moreVideo.getStrike_price()));
+                            }
+                        } else {
+                            holder.price.setText(String.format("₹%s", moreVideo.getVideo_price()));
+                            if (moreVideo.getStrike_price() == null) {
+                                holder.price_.setText("");
+                            } else {
+                                holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                                holder.price_.setText(String.format("₹%s", moreVideo.getStrike_price()));
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference gsReference = storage.getReferenceFromUrl("gs://coaching-institute-project.appspot.com/store/videos/" + moreVideo.getVideo_id() + ".mp4");
 
@@ -388,16 +545,47 @@ class _MoreVideoRecycler extends RecyclerView.Adapter<_MoreVideoRecycler.ViewHol
             if (moreVideo.getVideo_price().equals("0") || moreVideo.getVideo_price().isEmpty()) {
                 Intent intent = new Intent(v.getContext(), VideoPlayer.class);
                 intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                Toast.makeText(context, "Free", Toast.LENGTH_SHORT).show();
+                intent.putExtra("video_title", moreVideo.getVideo_title());
+                intent.putExtra("video_price", moreVideo.getVideo_price());
+                intent.putExtra("video_id", moreVideo.getVideo_id());
                 context.startActivity(intent);
             } else {
-                Intent intent = new Intent(v.getContext(), GooglePayTestActivity.class);
-                intent.putExtra("product_name", moreVideo.getVideo_title());
-                intent.putExtra("product_price", moreVideo.getVideo_price());
-                intent.putExtra("product_uid", moreVideo.getVideo_id());
-                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                Toast.makeText(context, "Paid", Toast.LENGTH_SHORT).show();
-                context.startActivity(intent);
+                db.child("purchased_courses").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (!snapshot.exists()) {
+                            Intent intent = new Intent(v.getContext(), GooglePayTestActivity.class);
+                            intent.putExtra("video_title", moreVideo.getVideo_title());
+                            intent.putExtra("video_price", moreVideo.getVideo_price());
+                            intent.putExtra("video_id", moreVideo.getVideo_id());
+                            intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                        } else {
+                            int a = 0;
+                            for (DataSnapshot ds : snapshot.getChildren()) {
+                                if (ds.child("video_id").getValue().toString().equals(moreVideo.getVideo_id())) {
+                                    a = 1;
+                                    Intent intent = new Intent(v.getContext(), VideoPlayer.class);
+                                    intent.putExtra("video_title", moreVideo.getVideo_title());
+                                    intent.putExtra("video_id", moreVideo.getVideo_id());
+                                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(intent);
+                                }
+                            }
+                            if (a == 0) {
+                                Intent intent = new Intent(v.getContext(), GooglePayTestActivity.class);
+                                intent.putExtra("video_title", moreVideo.getVideo_title());
+                                intent.putExtra("video_price", moreVideo.getVideo_price());
+                                intent.putExtra("video_id", moreVideo.getVideo_id());
+                                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(intent);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
             }
         });
     }
@@ -409,13 +597,14 @@ class _MoreVideoRecycler extends RecyclerView.Adapter<_MoreVideoRecycler.ViewHol
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title, price;
+        TextView title, price, price_;
         ImageView image;
 
         public ViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.more_video_title);
             price = itemView.findViewById(R.id.more_video_price);
+            price_ = itemView.findViewById(R.id.more_video_price_);
             image = itemView.findViewById(R.id.more_video_thumb_recycle);
         }
     }
@@ -423,14 +612,14 @@ class _MoreVideoRecycler extends RecyclerView.Adapter<_MoreVideoRecycler.ViewHol
 
 class _MoreVideo {
     private String video_title, video_description, video_price, video_teacher, video_duration;
-    private String video_id, video_upload_time;
+    private String video_id, video_upload_time, strike_price;
 
     public _MoreVideo() {
         //empty constructor needed
     }
 
     public _MoreVideo(String video_title, String video_description, String video_upload_time,
-                      String video_teacher, String video_price, String video_id, String video_duration) {
+                      String video_teacher, String video_price, String video_id, String video_duration, String strike_price) {
         this.video_title = video_title;
         this.video_teacher = video_teacher;
         this.video_price = video_price;
@@ -438,6 +627,8 @@ class _MoreVideo {
         this.video_description = video_description;
         this.video_upload_time = video_upload_time;
         this.video_duration = video_duration;
+        this.strike_price = strike_price;
+
     }
 
     public String getVideo_title() {
@@ -450,6 +641,10 @@ class _MoreVideo {
 
     public String getVideo_id() {
         return video_id;
+    }
+
+    public String getStrike_price() {
+        return strike_price;
     }
 
     public String getVideo_duration() {

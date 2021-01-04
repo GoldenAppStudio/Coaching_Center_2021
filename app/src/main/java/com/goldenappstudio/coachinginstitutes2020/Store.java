@@ -49,8 +49,7 @@ import java.util.List;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class Store extends Fragment {
-    public Store() {
-    }
+    public Store() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -274,7 +273,6 @@ class InterestVideoRecycle extends RecyclerView.Adapter<InterestVideoRecycle.Vie
 
         final InterestingVideo interestingVideo = MainImageUploadInfoList.get(position);
         holder.title.setText(interestingVideo.getVideo_title());
-        Toast.makeText(context, "" + interestingVideo.getVideo_teacher(), Toast.LENGTH_SHORT).show();
         holder.teacher.setText(interestingVideo.getVideo_teacher());
         holder.upload_time.setText(interestingVideo.getVideo_upload_time());
 
@@ -287,11 +285,20 @@ class InterestVideoRecycle extends RecyclerView.Adapter<InterestVideoRecycle.Vie
                 if (!snapshot.exists()) {
                     if (interestingVideo.getVideo_price().isEmpty() || interestingVideo.getVideo_price().equals("0")) {
                         holder.price.setText("Free");
-                        holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                        holder.price_.setText(interestingVideo.getStrike_price());
+                        if(interestingVideo.getStrike_price() == null) {
+                            holder.price_.setText("");
+                        } else {
+                            holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                            holder.price_.setText(String.format("₹%s", interestingVideo.getStrike_price()));
+                        }
                     } else {
-                        holder.price.setText(String.format("Rs %s", interestingVideo.getVideo_price()));
-                    }
+                        holder.price.setText(String.format("₹%s", interestingVideo.getVideo_price()));
+                        if(interestingVideo.getStrike_price() == null) {
+                            holder.price_.setText("");
+                        } else {
+                            holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                            holder.price_.setText(String.format("₹%s", interestingVideo.getStrike_price()));
+                        }                    }
                 } else {
                     int a = 0;
                     for (DataSnapshot ds : snapshot.getChildren()) {
@@ -303,12 +310,20 @@ class InterestVideoRecycle extends RecyclerView.Adapter<InterestVideoRecycle.Vie
                     if (a == 0) {
                         if (interestingVideo.getVideo_price().isEmpty() || interestingVideo.getVideo_price().equals("0")) {
                             holder.price.setText("Free");
-                            holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                            holder.price_.setText(interestingVideo.getStrike_price());
+                            if(interestingVideo.getStrike_price() == null) {
+                                holder.price_.setText("");
+                            } else {
+                                holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                                holder.price_.setText(String.format("₹%s", interestingVideo.getStrike_price()));
+                            }
                         } else {
-                            holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                            holder.price_.setText(interestingVideo.getStrike_price());
-                            holder.price.setText(String.format("Rs %s", interestingVideo.getVideo_price()));
+                            holder.price.setText(String.format("₹%s", interestingVideo.getVideo_price()));
+                            if(interestingVideo.getStrike_price() == null) {
+                                holder.price_.setText("");
+                            } else {
+                                holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                                holder.price_.setText(String.format("₹%s", interestingVideo.getStrike_price()));
+                            }
                         }
                     }
                 }
@@ -331,7 +346,9 @@ class InterestVideoRecycle extends RecyclerView.Adapter<InterestVideoRecycle.Vie
             if (interestingVideo.getVideo_price().equals("0") || interestingVideo.getVideo_price().isEmpty()) {
                 Intent intent = new Intent(v.getContext(), VideoPlayer.class);
                 intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                Toast.makeText(context, "Free", Toast.LENGTH_SHORT).show();
+                intent.putExtra("video_title", interestingVideo.getVideo_title());
+                intent.putExtra("video_price", interestingVideo.getVideo_price());
+                intent.putExtra("video_id", interestingVideo.getVideo_id());
                 context.startActivity(intent);
             } else {
                 db.child("purchased_courses").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -474,10 +491,67 @@ class MoreVideoRecycler extends RecyclerView.Adapter<MoreVideoRecycler.ViewHolde
 
         final MoreVideo moreVideo = MainImageUploadInfoList.get(position);
         holder.title.setText(moreVideo.getVideo_title());
-        holder.price.setText(moreVideo.getVideo_price());
+        DatabaseReference db = FirebaseDatabase.getInstance()
+                .getReference("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        db.child("purchased_courses").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    if (moreVideo.getVideo_price().isEmpty() || moreVideo.getVideo_price().equals("0")) {
+                        holder.price.setText("Free");
+                        if(moreVideo.getStrike_price() == null) {
+                            holder.price_.setText("");
+                        } else {
+                            holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                            holder.price_.setText(String.format("₹%s", moreVideo.getStrike_price()));
+                        }
+                    } else {
+                        holder.price.setText(String.format("₹%s", moreVideo.getVideo_price()));
+                        if(moreVideo.getStrike_price() == null) {
+                            holder.price_.setText("");
+                        } else {
+                            holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                            holder.price_.setText(String.format("₹%s", moreVideo.getStrike_price()));
+                        }                    }
+                } else {
+                    int a = 0;
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        if (ds.child("video_id").getValue().toString().equals(moreVideo.getVideo_id())) {
+                            holder.price.setText("PURCHASED");
+                            a = 1;
+                        }
+                    }
+                    if (a == 0) {
+                        if (moreVideo.getVideo_price().isEmpty() || moreVideo.getVideo_price().equals("0")) {
+                            holder.price.setText("Free");
+                            if(moreVideo.getStrike_price() == null) {
+                                holder.price_.setText("");
+                            } else {
+                                holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                                holder.price_.setText(String.format("₹%s", moreVideo.getStrike_price()));
+                            }
+                        } else {
+                            holder.price.setText(String.format("₹%s", moreVideo.getVideo_price()));
+                            if(moreVideo.getStrike_price() == null) {
+                                holder.price_.setText("");
+                            } else {
+                                holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                                holder.price_.setText(String.format("₹%s", moreVideo.getStrike_price()));
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         holder.teacher.setText(moreVideo.getVideo_teacher());
         holder.upload_time.setText(moreVideo.getVideo_upload_time());
-        holder.price_.setText(moreVideo.getStrike_price());
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference gsReference = storage.getReferenceFromUrl("gs://coaching-institute-project.appspot.com/store/videos/" + moreVideo.getVideo_id() + ".mp4");
 
@@ -489,16 +563,47 @@ class MoreVideoRecycler extends RecyclerView.Adapter<MoreVideoRecycler.ViewHolde
             if (moreVideo.getVideo_price().equals("0") || moreVideo.getVideo_price().isEmpty()) {
                 Intent intent = new Intent(v.getContext(), VideoPlayer.class);
                 intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                Toast.makeText(context, "Free", Toast.LENGTH_SHORT).show();
+                intent.putExtra("video_title", moreVideo.getVideo_title());
+                intent.putExtra("video_price", moreVideo.getVideo_price());
+                intent.putExtra("video_id", moreVideo.getVideo_id());
                 context.startActivity(intent);
             } else {
-                Intent intent = new Intent(v.getContext(), GooglePayTestActivity.class);
-                intent.putExtra("product_name", moreVideo.getVideo_title());
-                intent.putExtra("product_price", moreVideo.getVideo_price());
-                intent.putExtra("product_uid", moreVideo.getVideo_id());
-                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                Toast.makeText(context, "Paid", Toast.LENGTH_SHORT).show();
-                context.startActivity(intent);
+                db.child("purchased_courses").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (!snapshot.exists()) {
+                            Intent intent = new Intent(v.getContext(), GooglePayTestActivity.class);
+                            intent.putExtra("video_title", moreVideo.getVideo_title());
+                            intent.putExtra("video_price", moreVideo.getVideo_price());
+                            intent.putExtra("video_id", moreVideo.getVideo_id());
+                            intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                        } else {
+                            int a = 0;
+                            for (DataSnapshot ds : snapshot.getChildren()) {
+                                if (ds.child("video_id").getValue().toString().equals(moreVideo.getVideo_id())) {
+                                    a = 1;
+                                    Intent intent = new Intent(v.getContext(), VideoPlayer.class);
+                                    intent.putExtra("video_title", moreVideo.getVideo_title());
+                                    intent.putExtra("video_id", moreVideo.getVideo_id());
+                                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(intent);
+                                }
+                            }
+                            if (a == 0) {
+                                Intent intent = new Intent(v.getContext(), GooglePayTestActivity.class);
+                                intent.putExtra("video_title", moreVideo.getVideo_title());
+                                intent.putExtra("video_price", moreVideo.getVideo_price());
+                                intent.putExtra("video_id", moreVideo.getVideo_id());
+                                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(intent);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
             }
         });
     }

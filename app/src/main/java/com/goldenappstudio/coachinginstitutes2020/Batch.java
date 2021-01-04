@@ -1,6 +1,7 @@
 package com.goldenappstudio.coachinginstitutes2020;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +11,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
 
@@ -189,19 +193,20 @@ public class Batch extends Fragment {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    if(batch_id_list.contains(dataSnapshot.child("batch_id").getValue().toString())) {
+                    if (batch_id_list.contains(dataSnapshot.child("batch_id").getValue().toString())) {
                         BatchClass batchClass = dataSnapshot.getValue(BatchClass.class);
                         list.add(batchClass);
                     }
                 }
 
                 Collections.reverse(list);
-                adapter[0] = new BatchRecycler(getActivity(), list);
+                adapter[0] = new BatchRecycler(getActivity(), list, getFragmentManager(), Batch.this);
                 recyclerView.setAdapter(adapter[0]);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
 
     }
@@ -227,10 +232,14 @@ class BatchRecycler extends RecyclerView.Adapter<BatchRecycler.ViewHolder> {
     View view;
     Context context;
     List<BatchClass> MainImageUploadInfoList;
+    FragmentManager fragmentManager;
+    Fragment fragment;
 
-    public BatchRecycler(Context context, List<BatchClass> TempList) {
+    public BatchRecycler(Context context, List<BatchClass> TempList, FragmentManager fragmentManager, Fragment fragment) {
         this.MainImageUploadInfoList = TempList;
         this.context = context;
+        this.fragmentManager = fragmentManager;
+        this.fragment = fragment;
     }
 
     @Override
@@ -254,9 +263,35 @@ class BatchRecycler extends RecyclerView.Adapter<BatchRecycler.ViewHolder> {
             intent.putExtra("batch_name", batchClass.getBatch_name());
             context.startActivity(intent);
         });
-        
-        holder.remove_batch.setOnClickListener(view1 -> {
 
+        holder.remove_batch.setOnClickListener(view1 -> {
+            new AlertDialog.Builder(context)
+                    .setTitle("Are you sure?")
+                    .setMessage("You are about to remove this batch from your profile. Continue?")
+                    .setNegativeButton("No", (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .setPositiveButton("Yes",
+                            (dialog, which) -> {
+                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/batches/");
+                                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        for (DataSnapshot ds : snapshot.getChildren()) {
+                                            if (ds.child("batch_id").getValue().toString().equals(batchClass.getBatch_id())) {
+                                                databaseReference.child(Objects.requireNonNull(ds.getKey())).removeValue();
+                                                fragmentManager.beginTransaction().detach(fragment).attach(fragment).commit();
+                                                Toast.makeText(context, "Batch removed from profile", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                            }).create().show();
         });
     }
 
@@ -269,6 +304,7 @@ class BatchRecycler extends RecyclerView.Adapter<BatchRecycler.ViewHolder> {
 
         TextView name, details, created_by, id;
         ImageView remove_batch;
+
         public ViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.batch_name);
@@ -290,7 +326,7 @@ class BatchClass {
     }
 
     public BatchClass(String batch_name,
-                        String created_by, String batch_id, String content) {
+                      String created_by, String batch_id, String content) {
         this.batch_name = batch_name;
         this.created_by = created_by;
         this.batch_id = batch_id;

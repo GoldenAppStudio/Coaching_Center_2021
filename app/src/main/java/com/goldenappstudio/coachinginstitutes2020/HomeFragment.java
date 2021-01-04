@@ -193,11 +193,20 @@ class TrendingVideoRecycle extends RecyclerView.Adapter<TrendingVideoRecycle.Vie
                 if (!snapshot.exists()) {
                     if (trendingVideo.getVideo_price().isEmpty() || trendingVideo.getVideo_price().equals("0")) {
                         holder.price.setText("Free");
-                        holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                        holder.price_.setText(String.format("Rs %s", trendingVideo.getStrike_price()));
+                        if(trendingVideo.getStrike_price() == null) {
+                            holder.price_.setText("");
+                        } else {
+                            holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                            holder.price_.setText(String.format("₹%s", trendingVideo.getStrike_price()));
+                        }
                     } else {
-                        holder.price.setText(String.format("Rs %s", trendingVideo.getVideo_price()));
-                    }
+                        holder.price.setText(String.format("₹%s", trendingVideo.getVideo_price()));
+                        if(trendingVideo.getStrike_price() == null) {
+                            holder.price_.setText("");
+                        } else {
+                            holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                            holder.price_.setText(String.format("₹%s", trendingVideo.getStrike_price()));
+                        }                    }
                 } else {
                     int a = 0;
                     for (DataSnapshot ds : snapshot.getChildren()) {
@@ -209,12 +218,20 @@ class TrendingVideoRecycle extends RecyclerView.Adapter<TrendingVideoRecycle.Vie
                     if (a == 0) {
                         if (trendingVideo.getVideo_price().isEmpty() || trendingVideo.getVideo_price().equals("0")) {
                             holder.price.setText("Free");
-                            holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                            holder.price_.setText(String.format("Rs %s", trendingVideo.getStrike_price()));
+                            if(trendingVideo.getStrike_price() == null) {
+                                holder.price_.setText("");
+                            } else {
+                                holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                                holder.price_.setText(String.format("₹%s", trendingVideo.getStrike_price()));
+                            }
                         } else {
-                            holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                            holder.price_.setText(String.format("Rs %s", trendingVideo.getStrike_price()));
-                            holder.price.setText(String.format("Rs %s", trendingVideo.getVideo_price()));
+                            holder.price.setText(String.format("₹%s", trendingVideo.getVideo_price()));
+                            if(trendingVideo.getStrike_price() == null) {
+                                holder.price_.setText("");
+                            } else {
+                                holder.price_.setPaintFlags(holder.price_.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                                holder.price_.setText(String.format("₹%s", trendingVideo.getStrike_price()));
+                            }
                         }
                     }
                 }
