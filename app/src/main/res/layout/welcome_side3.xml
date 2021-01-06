@@ -14,13 +14,14 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:src="@drawable/anand_playground" />
+            android:scaleType="fitXY"
+            android:src="@drawable/students" />
 
         <TextView
             android:typeface="serif"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Best Surrounding"
+            android:text="Keep Learning!"
             android:textColor="@android:color/white"
             android:textSize="@dimen/slide_title"
             android:textStyle="bold" />
@@ -32,7 +33,7 @@
             android:paddingLeft="@dimen/desc_padding"
             android:paddingRight="@dimen/desc_padding"
             android:typeface="serif"
-            android:text="We provide best surrounding for your education "
+            android:text="Learn continuous and do smart work instead of hard work for your dream job."
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:textSize="@dimen/slide_desc" />

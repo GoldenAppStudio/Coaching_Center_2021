@@ -14,8 +14,12 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,47 +38,18 @@ public class MainActivity extends AppCompatActivity implements FragmentChangeLis
     public static Fragment fragment;
     public FirebaseAuth mAuth;
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (!isNetworkAvailable(this)) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Network Error!")
-                    .setMessage("Connect To Internet First...")
-                    .setPositiveButton(android.R.string.yes,
-                            (dialog, which) -> quit()).create().show();
-
-            /*finish(); //Calling this method to close this activity when internet is not available.
-            Toast.makeText(this,"Connect to internet first", Toast.LENGTH_LONG).show();
-
-            System.exit(0);*/
-        }
-
-        // Check if user is signed in (non-null) and update UI accordingly.
-        /*FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-            finish();
-        }*/
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (getSupportActionBar() != null) getSupportActionBar().hide();
-        if (!isNetworkAvailable(this)) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Network Error!")
-                    .setMessage("Connect To Internet First...")
-                    .setPositiveButton(android.R.string.yes,
-                            (dialog, which) -> quit()).create().show();
-        }
 
         BottomNavigationView mainbottomNav = findViewById(R.id.mainBottomNav);
 
         initializeFragment();
+
+
 
         mainbottomNav.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
@@ -332,4 +307,29 @@ public class MainActivity extends AppCompatActivity implements FragmentChangeLis
         start.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(start);
     }
+
+    @Override
+    public void onBackPressed() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle(R.string.app_name);
+        builder.setIcon(R.mipmap.ic_launcher);
+        builder.setMessage("Do you want to exit?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+
+    }
+
+
 }

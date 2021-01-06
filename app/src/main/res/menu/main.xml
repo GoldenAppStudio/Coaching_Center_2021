@@ -4,7 +4,7 @@
     <item
         android:id="@+id/notifications"
         android:title="Add Service"
-        android:icon="@drawable/notifications"
+        android:icon="@drawable/notification"
         android:orderInCategory="1"
         app:showAsAction="ifRoom">
     </item>

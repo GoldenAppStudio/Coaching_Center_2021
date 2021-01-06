@@ -61,8 +61,11 @@
                 <TextView
                     android:id="@+id/user_personal"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:text="PERSONAL"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    style="@style/ButtonBorder.DarkGey"
                     android:textAlignment="center"
                     android:textColor="#000"
                     android:textSize="17sp"
@@ -74,9 +77,12 @@
                     android:layout_weight="1" />
 
                 <TextView
+                    style="@style/ButtonBorder.DarkGey"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
                     android:id="@+id/user_batches"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:text="BATCHES"
                     android:textColor="#666"
                     android:textSize="17sp" />
@@ -87,9 +93,12 @@
                     android:layout_weight="1" />
 
                 <TextView
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    style="@style/ButtonBorder.DarkGey"
                     android:id="@+id/user_details"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:text="DETAILS"
                     android:textColor="#666"
                     android:textSize="17sp" />

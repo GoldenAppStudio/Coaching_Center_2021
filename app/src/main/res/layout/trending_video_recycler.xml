@@ -3,12 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="280dp"
     android:layout_marginEnd="5dp"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view0"
         android:layout_width="280dp"
-        android:layout_height="190dp"
+        android:layout_height="wrap_content"
         >
 
         <LinearLayout
@@ -20,7 +20,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="150dp">
 
-                <ImageView
+                <pl.droidsonroids.gif.GifImageView
+                    android:src="@drawable/loading"
                     android:id="@+id/trending_video_thumb_recycle"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
@@ -47,7 +48,7 @@
                 <RelativeLayout
                     android:layout_centerVertical="true"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content">
 
                     <TextView
                         android:layout_marginStart="3dp"

@@ -3,6 +3,7 @@ package com.goldenappstudio.coachinginstitutes2020;
 import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,9 +44,14 @@ import com.google.firebase.storage.StorageReference;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+
+import pl.droidsonroids.gif.GifImageView;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -73,6 +80,8 @@ public class Store extends Fragment {
         LinearLayout video_layout = view.findViewById(R.id.store_video_layout);
         LinearLayout pdf_layout = view.findViewById(R.id.store_pdf_layout);
         LinearLayout fsm_layout = view.findViewById(R.id.store_fsm_layout);
+
+
 
         video_button.setOnClickListener(view1 -> {
             video_button.setBackgroundColor(Color.parseColor("#7579e7"));
@@ -399,7 +408,7 @@ class InterestVideoRecycle extends RecyclerView.Adapter<InterestVideoRecycle.Vie
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView title, price, price_, teacher, upload_time;
-        ImageView image;
+        GifImageView image;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -616,19 +625,21 @@ class MoreVideoRecycler extends RecyclerView.Adapter<MoreVideoRecycler.ViewHolde
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView title, price, price_, teacher, upload_time;
-        ImageView image;
+        GifImageView image;
 
         public ViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.more_video_title);
             price = itemView.findViewById(R.id.more_video_price);
             image = itemView.findViewById(R.id.more_video_thumb_recycle);
+
             teacher = itemView.findViewById(R.id.more_video_teacher);
             price_ = itemView.findViewById(R.id.more_video_price_);
             upload_time = itemView.findViewById(R.id.more_video_upload_time);
         }
     }
 }
+
 
 class MoreVideo {
     private String video_title, video_description, video_price, video_teacher, video_duration;
@@ -689,6 +700,7 @@ class PdfRecycler extends RecyclerView.Adapter<PdfRecycler.ViewHolder> {
     View view;
     Context context;
     List<Pdfs> MainImageUploadInfoList;
+    String filePath;
 
     public PdfRecycler(Context context, List<Pdfs> TempList) {
         this.MainImageUploadInfoList = TempList;
@@ -709,6 +721,7 @@ class PdfRecycler extends RecyclerView.Adapter<PdfRecycler.ViewHolder> {
         holder.details.setText(String.format("by %s (%s)", pdfs.getPdf_teacher(), pdfs.getPdf_upload_time()));
 
         holder.itemView.setOnClickListener(v -> {
+            filePath = getVideoFilePath();
             Dialog myDialog = new Dialog(context);
             myDialog.setContentView(R.layout.show_popup);
             TextView title = myDialog.findViewById(R.id.notification_title_popup);
@@ -722,14 +735,23 @@ class PdfRecycler extends RecyclerView.Adapter<PdfRecycler.ViewHolder> {
         });
 
         holder.download_pdf.setOnClickListener(view -> {
+            filePath = getVideoFilePath();
             StorageReference reference = FirebaseStorage.getInstance().getReference("store/pdfs");
             reference.child(pdfs.getPdf_id() + ".pdf").getDownloadUrl().addOnSuccessListener(uri -> {
                 Toast.makeText(context, "Pdf will be downloaded shortly...", Toast.LENGTH_SHORT).show();
                 downloadFile(context, pdfs.getPdf_title(), ".pdf",
-                        String.valueOf(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)),
+                        String.valueOf(filePath),
                         uri.toString());
             });
         });
+    }
+
+    public static String getVideoFilePath() {
+        return getAndroidMoviesFolder().getAbsolutePath() + "/" + new SimpleDateFormat("yyyyMM_dd-HHmmss").format(new Date()) + ".pdf";
+    }
+
+    public static File getAndroidMoviesFolder() {
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
     }
 
     @Override
@@ -750,16 +772,16 @@ class PdfRecycler extends RecyclerView.Adapter<PdfRecycler.ViewHolder> {
         }
     }
 
-    public long downloadFile(Context context, String fileName, String fileExtension, String destinationDirectory, String url) {
+    public long downloadFile(Context context, String fileName, String fileExtension, String filePath, String url) {
         DownloadManager downloadmanager = (DownloadManager) context.
                 getSystemService(Context.DOWNLOAD_SERVICE);
+
         Uri uri = Uri.parse(url);
         DownloadManager.Request request = new DownloadManager.Request(uri);
 
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalFilesDir(context, destinationDirectory, fileName + fileExtension);
-
+        request.setDestinationInExternalFilesDir(context, filePath, fileName + fileExtension);
         return downloadmanager.enqueue(request);
     }
 }

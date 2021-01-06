@@ -8,14 +8,15 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view0"
         android:layout_width="280dp"
-        android:layout_height="185dp">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <ImageView
+            <pl.droidsonroids.gif.GifImageView
+                android:src="@drawable/loading"
                 android:id="@+id/interest_video_thumb_recycle"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
@@ -23,7 +24,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:layout_marginStart="3dp"

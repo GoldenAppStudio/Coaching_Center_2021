@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
     <application
+
         android:allowBackup="true"
         android:configChanges="orientation|screenSize|layoutDirection"
         android:icon="@mipmap/ic_launcher"

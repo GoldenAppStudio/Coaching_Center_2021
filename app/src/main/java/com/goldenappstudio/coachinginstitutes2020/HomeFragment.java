@@ -49,6 +49,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import pl.droidsonroids.gif.GifImageView;
+
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.goldenappstudio.coachinginstitutes2020.MainActivity.fragment;
 
@@ -80,6 +82,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
 
         viewFlipper = getView().findViewById(R.id.view_flipper);
         viewFlipper.setInAnimation(this.getContext(), android.R.anim.slide_in_left);
@@ -312,7 +315,7 @@ class TrendingVideoRecycle extends RecyclerView.Adapter<TrendingVideoRecycle.Vie
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView title, price, price_, duration, upload_time, author;
-        ImageView image;
+        GifImageView image;
 
         public ViewHolder(View itemView) {
             super(itemView);

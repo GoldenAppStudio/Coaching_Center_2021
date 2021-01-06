@@ -15,12 +15,12 @@
             android:adjustViewBounds="true"
             android:layout_width="match_parent"
             android:layout_height="280dp"
-            android:src="@drawable/anand_playground" />
+            android:src="@drawable/teaching" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Register Yourself Here "
+            android:text="Best Surrounding!"
             android:typeface="serif"
             android:textColor="@android:color/white"
             android:textSize="@dimen/slide_title"
@@ -33,7 +33,7 @@
             android:paddingLeft="@dimen/desc_padding"
             android:paddingRight="@dimen/desc_padding"
             android:typeface="serif"
-            android:text="If you are a service provider and want to give your service to Find App then just click plus button and fill registration form and register yourself free\nGreat News for Service providers."
+            android:text="We are providing the best surrounding and teachers for you education."
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:textSize="@dimen/slide_desc" />

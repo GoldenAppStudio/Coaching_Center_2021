@@ -158,8 +158,8 @@ public class BatchActivity extends AppCompatActivity {
 
         databaseReference = FirebaseDatabase.getInstance().getReference("batches/" + getIntent().getStringExtra("batch_id") + "store/videos/");
         reference = FirebaseDatabase.getInstance().getReference("batches/" + getIntent().getStringExtra("batch_id") + "/store/videos/");
-        pdf_reference = FirebaseDatabase.getInstance().getReference("batches/" + getIntent().getStringExtra("batch_id") + "store/pdfs/");
-        fsm_reference = FirebaseDatabase.getInstance().getReference("batches/" + getIntent().getStringExtra("batch_id") + "store/fsm/");
+        pdf_reference = FirebaseDatabase.getInstance().getReference("batches/" + getIntent().getStringExtra("batch_id") + "/store/pdfs/");
+        fsm_reference = FirebaseDatabase.getInstance().getReference("batches/" + getIntent().getStringExtra("batch_id") + "/store/fsm/");
 
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -169,7 +169,7 @@ public class BatchActivity extends AppCompatActivity {
                     list.add(interestingVideo);
                 }
 
-                adapter[0] = new _InterestVideoRecycle(BatchActivity.this, list);
+                adapter[0] = new _InterestVideoRecycle(BatchActivity.this, list, getIntent().getStringExtra("batch_id"));
                 recyclerView.setAdapter(adapter[0]);
             }
 
@@ -187,7 +187,7 @@ public class BatchActivity extends AppCompatActivity {
                 }
 
                 Collections.reverse(list1);
-                adapter1[0] = new _MoreVideoRecycler(BatchActivity.this, list1);
+                adapter1[0] = new _MoreVideoRecycler(BatchActivity.this, list1, getIntent().getStringExtra("batch_id"));
                 recyclerView1.setAdapter(adapter1[0]);
             }
 
@@ -205,7 +205,7 @@ public class BatchActivity extends AppCompatActivity {
                 }
 
                 Collections.reverse(pdf_list);
-                pdf_adapter[0] = new _PdfRecycler(BatchActivity.this, pdf_list);
+                pdf_adapter[0] = new _PdfRecycler(BatchActivity.this, pdf_list, getIntent().getStringExtra("batch_id"));
                 pdf_recyclerview.setAdapter(pdf_adapter[0]);
             }
 
@@ -239,11 +239,12 @@ class _InterestVideoRecycle extends RecyclerView.Adapter<_InterestVideoRecycle.V
     View view;
     Context context;
     List<_InterestingVideo> MainImageUploadInfoList;
-    public static String SUB_SERVICE_UID;
+    String batch_id;
 
-    public _InterestVideoRecycle(Context context, List<_InterestingVideo> TempList) {
+    public _InterestVideoRecycle(Context context, List<_InterestingVideo> TempList, String batch_id) {
         this.MainImageUploadInfoList = TempList;
         this.context = context;
+        this.batch_id = batch_id;
     }
 
     @Override
@@ -456,11 +457,12 @@ class _MoreVideoRecycler extends RecyclerView.Adapter<_MoreVideoRecycler.ViewHol
     View view;
     Context context;
     List<_MoreVideo> MainImageUploadInfoList;
-    public static String SUB_SERVICE_UID;
+     String batch_id;
 
-    public _MoreVideoRecycler(Context context, List<_MoreVideo> TempList) {
+    public _MoreVideoRecycler(Context context, List<_MoreVideo> TempList, String batch_id) {
         this.MainImageUploadInfoList = TempList;
         this.context = context;
+        this.batch_id = batch_id;
     }
 
     @NotNull
@@ -669,10 +671,12 @@ class _PdfRecycler extends RecyclerView.Adapter<_PdfRecycler.ViewHolder> {
     View view;
     Context context;
     List<_Pdfs> MainImageUploadInfoList;
+    String batch_id;
 
-    public _PdfRecycler(Context context, List<_Pdfs> TempList) {
+    public _PdfRecycler(Context context, List<_Pdfs> TempList, String batch_id) {
         this.MainImageUploadInfoList = TempList;
         this.context = context;
+        this.batch_id = batch_id;
     }
 
     @Override
@@ -702,7 +706,7 @@ class _PdfRecycler extends RecyclerView.Adapter<_PdfRecycler.ViewHolder> {
         });
 
         holder.download_pdf.setOnClickListener(view -> {
-            StorageReference reference = FirebaseStorage.getInstance().getReference("store/pdfs");
+            StorageReference reference = FirebaseStorage.getInstance().getReference("batches/" + batch_id + "/store/pdfs");
             reference.child(pdfs.getPdf_id() + ".pdf").getDownloadUrl().addOnSuccessListener(uri -> {
                 Toast.makeText(context, "Pdf will be downloaded shortly...", Toast.LENGTH_SHORT).show();
                 downloadFile(context, pdfs.getPdf_title(), ".pdf",

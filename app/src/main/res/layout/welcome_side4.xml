@@ -14,12 +14,12 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="280dp"
-            android:src="@drawable/andand_school" />
+            android:src="@drawable/laptop" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Show Your Business Ads!"
+            android:text="Best Video Courses!"
             android:textColor="@android:color/white"
             android:textSize="@dimen/slide_title"
             android:textAlignment="center"
@@ -33,7 +33,7 @@
             android:paddingLeft="@dimen/desc_padding"
             android:paddingRight="@dimen/desc_padding"
             android:typeface="serif"
-            android:text="If you are a businessman and you want to show your business ads for marketing in our app then contact to the admin shown in the upper red circle."
+            android:text="Watch videos of your favourite subjects from your favourite teacher. Learn with FUN!"
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:textSize="@dimen/slide_desc" />
