@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.goldenappstudio.coachinginstitutes2020">
+    package="com.goldenapp.questionhub">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
     <application
-
         android:allowBackup="true"
         android:configChanges="orientation|screenSize|layoutDirection"
         android:icon="@mipmap/ic_launcher"
@@ -17,27 +16,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".BatchActivity" />
-        <activity android:name=".FreeStudyMaterial" />
+        <activity android:name="com.goldenapp.questionhub.NotificationActivity" />
+        <activity android:name="com.goldenapp.questionhub.BatchActivity" />
+        <activity android:name="com.goldenapp.questionhub.FreeStudyMaterial" />
         <activity
-            android:name=".ContactUs"
-            android:parentActivityName=".ContactUs" />
-        <activity android:name=".OnlineQuiz" />
+            android:name="com.goldenapp.questionhub.ContactUs"
+            android:parentActivityName="com.goldenapp.questionhub.ContactUs" />
+        <activity android:name="com.goldenapp.questionhub.OnlineQuiz" />
         <activity
-            android:name=".GooglePayTestActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name="com.goldenapp.questionhub.GooglePayTestActivity"
+            android:parentActivityName="com.goldenapp.questionhub.MainActivity" />
         <activity
-            android:name=".VideoPlayer"
+            android:name="com.goldenapp.questionhub.VideoPlayer"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Second" />
+        <activity android:name="com.goldenapp.questionhub.Second" />
         <activity
-            android:name=".RegistrationActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name="com.goldenapp.questionhub.RegistrationActivity"
+            android:parentActivityName="com.goldenapp.questionhub.MainActivity" />
         <activity
-            android:name=".LoginActivity"
+            android:name="com.goldenapp.questionhub.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SplashScreen"
+            android:name="com.goldenapp.questionhub.SplashScreen"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,9 +46,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Welcome"
+            android:name="com.goldenapp.questionhub.Welcome"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity android:name=".MainActivity">
+        <activity android:name="com.goldenapp.questionhub.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -57,13 +57,13 @@
         </activity>
 
         <service
-            android:name=".GettingDeviceTokenService"
+            android:name="com.goldenapp.questionhub.GettingDeviceTokenService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANT_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".MyFirebaseInstanceIDService">
+        <service android:name="com.goldenapp.questionhub.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -75,6 +75,9 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimaryDark" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

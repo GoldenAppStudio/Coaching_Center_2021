@@ -16,8 +16,8 @@
         android:title="Store" />
     <item
         android:id="@+id/bottom_action_notif"
-        android:icon="@drawable/notification"
-        android:title="Notification" />
+        android:icon="@drawable/question"
+        android:title="Quiz" />
     <item
         android:id="@+id/bottom_action_account"
         android:icon="@drawable/setting"

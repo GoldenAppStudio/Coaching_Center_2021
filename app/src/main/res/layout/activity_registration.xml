@@ -12,15 +12,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/action_bar"
-            android:text="Fill Registration From"
-            android:textColor="#fff"
-            android:textSize="18dp"/>
-
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -25,7 +25,7 @@
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Coaching Institute"
+        android:text="The Question Hub"
         android:textAlignment="center"
         android:typeface="serif"
         android:textSize="25sp"

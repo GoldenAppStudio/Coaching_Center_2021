@@ -2,10 +2,15 @@
 <resources>
     <color name="colorPrimary">#610B38</color>
     <color name="colorPrimaryDark">#610B38</color>
-    <color name="colorAccent">#610B38</color>
+    <color name="colorAccent">#FF3B00</color>
+    <color name="colorNewAccent">#FF3B00</color>
     <color name="DarkGrey">#fff</color>
     <color name="colorTransparent">#00000000</color>
     <color name="colorOverlay">#fff</color>
+
+    <color name="colorDark">#111111</color>
+    <color name="colorLightText">#707070</color>
+    <color name="colorCorrectAnswer">#00ff00</color>
 
     <color name="bg_screen1">#008577</color>
     <color name="bg_screen2">#008577</color>
